@@ -1,0 +1,373 @@
+{
+ "rows": [
+  {
+   "train_index": 0,
+   "train_name": "r_hip_z",
+   "servo_name": "r_hip_yaw",
+   "servo_index": 0,
+   "servo_id": 7,
+   "servo_direction": -1,
+   "axis": [
+    -0.0,
+    -0.0,
+    -1.0
+   ],
+   "default_rad": 0.0,
+   "train_range": [
+    -0.785398,
+    0.785398
+   ],
+   "policy_target_range": [
+    -0.392699,
+    0.392699
+   ],
+   "servo_soft_limits": [
+    -0.785398,
+    0.785398
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "toes_outward"
+  },
+  {
+   "train_index": 1,
+   "train_name": "r_hip_x",
+   "servo_name": "r_hip_pitch_joint",
+   "servo_index": 2,
+   "servo_id": 9,
+   "servo_direction": 1,
+   "axis": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "default_rad": -0.174533,
+   "train_range": [
+    -1.570796,
+    0.523599
+   ],
+   "policy_target_range": [
+    -0.8726645,
+    0.174533
+   ],
+   "servo_soft_limits": [
+    -1.570796,
+    1.570796
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "leg_backward"
+  },
+  {
+   "train_index": 2,
+   "train_name": "r_hip_y",
+   "servo_name": "r_hip_roll_joint",
+   "servo_index": 1,
+   "servo_id": 8,
+   "servo_direction": 1,
+   "axis": [
+    -1.0,
+    -0.0,
+    -0.0
+   ],
+   "default_rad": 0.0,
+   "train_range": [
+    -0.436332,
+    0.785398
+   ],
+   "policy_target_range": [
+    -0.218166,
+    0.392699
+   ],
+   "servo_soft_limits": [
+    -0.436332,
+    1.570796
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "leg_outward"
+  },
+  {
+   "train_index": 3,
+   "train_name": "r_knee",
+   "servo_name": "r_knee_joint",
+   "servo_index": 3,
+   "servo_id": 10,
+   "servo_direction": 1,
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "default_rad": -0.453786,
+   "train_range": [
+    -2.094395,
+    0.087266
+   ],
+   "policy_target_range": [
+    -1.2740905,
+    -0.18326000000000003
+   ],
+   "servo_soft_limits": [
+    -2.094395,
+    2.094395
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "shin_forward"
+  },
+  {
+   "train_index": 4,
+   "train_name": "r_ankle_y",
+   "servo_name": "r_ankle_pitch_joint",
+   "servo_index": 4,
+   "servo_id": 12,
+   "servo_direction": 1,
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "default_rad": -0.279253,
+   "train_range": [
+    -0.610865,
+    0.872665
+   ],
+   "policy_target_range": [
+    -0.445059,
+    0.296706
+   ],
+   "servo_soft_limits": [
+    -0.610865,
+    1.48353
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "toes_down"
+  },
+  {
+   "train_index": 5,
+   "train_name": "r_ankle_x",
+   "servo_name": "r_ankle_roll_joint",
+   "servo_index": 5,
+   "servo_id": 11,
+   "servo_direction": 1,
+   "axis": [
+    -1.0,
+    -0.0,
+    -0.0
+   ],
+   "default_rad": 0.0,
+   "train_range": [
+    -1.047198,
+    1.047198
+   ],
+   "policy_target_range": [
+    -0.523599,
+    0.523599
+   ],
+   "servo_soft_limits": [
+    -1.396263,
+    1.396263
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "outer_edge_up"
+  },
+  {
+   "train_index": 6,
+   "train_name": "l_hip_z",
+   "servo_name": "l_hip_yaw",
+   "servo_index": 6,
+   "servo_id": 13,
+   "servo_direction": 1,
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "default_rad": 0.0,
+   "train_range": [
+    -0.785398,
+    0.785398
+   ],
+   "policy_target_range": [
+    -0.392699,
+    0.392699
+   ],
+   "servo_soft_limits": [
+    -0.785398,
+    0.785398
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "toes_outward"
+  },
+  {
+   "train_index": 7,
+   "train_name": "l_hip_x",
+   "servo_name": "l_hip_pitch_joint",
+   "servo_index": 8,
+   "servo_id": 3,
+   "servo_direction": -1,
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "default_rad": -0.174533,
+   "train_range": [
+    -1.570796,
+    0.523599
+   ],
+   "policy_target_range": [
+    -0.8726645,
+    0.174533
+   ],
+   "servo_soft_limits": [
+    -1.570796,
+    1.570796
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "leg_backward"
+  },
+  {
+   "train_index": 8,
+   "train_name": "l_hip_y",
+   "servo_name": "l_hip_roll_joint",
+   "servo_index": 7,
+   "servo_id": 2,
+   "servo_direction": -1,
+   "axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "default_rad": 0.0,
+   "train_range": [
+    -0.436332,
+    0.785398
+   ],
+   "policy_target_range": [
+    -0.218166,
+    0.392699
+   ],
+   "servo_soft_limits": [
+    -0.436332,
+    1.570796
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "leg_outward"
+  },
+  {
+   "train_index": 9,
+   "train_name": "l_knee",
+   "servo_name": "l_knee_joint",
+   "servo_index": 9,
+   "servo_id": 4,
+   "servo_direction": -1,
+   "axis": [
+    -0.0,
+    -1.0,
+    -0.0
+   ],
+   "default_rad": -0.453786,
+   "train_range": [
+    -2.094395,
+    0.087266
+   ],
+   "policy_target_range": [
+    -1.2740905,
+    -0.18326000000000003
+   ],
+   "servo_soft_limits": [
+    -2.094395,
+    2.094395
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "shin_forward"
+  },
+  {
+   "train_index": 10,
+   "train_name": "l_ankle_y",
+   "servo_name": "l_ankle_pitch_joint",
+   "servo_index": 10,
+   "servo_id": 6,
+   "servo_direction": -1,
+   "axis": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "default_rad": -0.279253,
+   "train_range": [
+    -0.610865,
+    0.872665
+   ],
+   "policy_target_range": [
+    -0.445059,
+    0.296706
+   ],
+   "servo_soft_limits": [
+    -0.610865,
+    1.48353
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "toes_down"
+  },
+  {
+   "train_index": 11,
+   "train_name": "l_ankle_x",
+   "servo_name": "l_ankle_roll_joint",
+   "servo_index": 11,
+   "servo_id": 5,
+   "servo_direction": -1,
+   "axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "default_rad": 0.0,
+   "train_range": [
+    -1.047198,
+    1.047198
+   ],
+   "policy_target_range": [
+    -0.523599,
+    0.523599
+   ],
+   "servo_soft_limits": [
+    -1.396263,
+    1.396263
+   ],
+   "offset_diff_mm": 0.0,
+   "positive_motion": "outer_edge_up"
+  }
+ ],
+ "swapped_indices": [
+  [
+   "r_hip_x",
+   "r_hip_pitch_joint"
+  ],
+  [
+   "r_hip_y",
+   "r_hip_roll_joint"
+  ],
+  [
+   "l_hip_x",
+   "l_hip_pitch_joint"
+  ],
+  [
+   "l_hip_y",
+   "l_hip_roll_joint"
+  ]
+ ],
+ "problems": [],
+ "train_to_servo_index": [
+  0,
+  2,
+  1,
+  3,
+  4,
+  5,
+  6,
+  8,
+  7,
+  9,
+  10,
+  11
+ ]
+}

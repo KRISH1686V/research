@@ -1,0 +1,105 @@
+train:
+  seed: 42
+  steps: 1000000
+  worker_groups: 1
+  workers_per_group: 1
+  use_history: true
+  history_size: 5
+  normalize_obs: true
+  symmetry_augmentation: true
+  actor_obs: "normal"
+  critic_obs: "privileged"
+  use_rough_terrain: false
+  use_terrain_curriculum: false
+  log_dir: "runs_stand"
+  checkpoint_path: "checkpoints_stand/"
+  model_name: "BipedV2_SAC_STAND"
+  overwrite_model: true
+  model: "sac"
+  test_environment: false
+  epoch_steps: 1000
+  save_steps: 3000
+  test_episodes: 2
+  show_progress: true
+  replace_checkpoint: true
+
+  env_config:
+    reward_scale: 1.0
+    reward_weights:
+      track_lin_vel_xy_exp: 2.0
+      track_ang_vel_z_exp: 0.8
+      termination_penalty: -2.0
+      flat_orientation_l2: -1.0
+      lin_vel_z_l2: -0.5
+      ang_vel_xy_l2: -0.05
+      action_rate_l2: -0.05
+      dof_torques_l2: -0.0005
+      dof_pos_limits: -1.0
+      feet_air_time: 0.0
+      feet_slide: -0.1
+      swing_foot_height: 0.0
+      gait_phase_contact: 0.0
+      joint_deviation_hip: -0.05
+      joint_deviation_hip_pitch: -0.03
+      joint_deviation_ankle_roll: -0.02
+      joint_deviation_ankle_pitch: -0.1
+      joint_deviation_knee: -0.05
+      ankle_torques_l2: -0.001
+      dof_pos_l2: -0.1
+      foot_separation: -0.2
+      step_length: 0.0
+      knee_bend_touchdown: 0.0
+      action_l2: 0.0
+      base_height_l2: -1.0
+      track_joint_pos_exp: 0.0
+      track_joint_vel_exp: 0.0
+
+    commands:
+      base_velocity:
+        resampling_time_range: [8.0, 12.0]
+        heading_control_stiffness: 0.5
+        rel_standing_envs: 1.0
+        rel_heading_envs: 0.0
+        ranges:
+          lin_vel_x: [0.0, 0.0]
+          lin_vel_y: [0.0, 0.0]
+          ang_vel_z: [0.0, 0.0]
+          heading: [0.0, 0.0]
+
+    observation_noise_model:
+      mean: 0.0
+      std: 0.02
+    action_noise_model:
+      mean: 0.0
+      std: 0.005
+    action_delay_steps_range: [0, 1]
+    curriculum_enabled: false
+
+model:
+  actor_config:
+    network_type: mlp
+    hidden_sizes: [1024, 512, 256]
+  critic_config:
+    network_type: mlp
+    hidden_sizes: [1024, 512, 256]
+  target_coeff: 0.01
+  actor_lr: 3.0e-4
+  critic_lr: 3.0e-4
+  lr_scheduler:
+    scheduler_type: "none"
+
+exploration:
+  scale: 0.2
+  min_scale: 0.03
+  decay_rate: 1.0e-7
+  start_steps: 4096
+
+buffer:
+  size: 1000000
+  return_steps: 5
+  batch_iterations: 10
+  batch_size: 2048
+  discount_factor: 0.99
+  steps_before_batches: 4096
+  steps_between_batches: 4
+  seed: 42

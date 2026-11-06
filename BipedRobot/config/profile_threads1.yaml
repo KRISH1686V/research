@@ -1,0 +1,4 @@
+base_config: pilot_gait_smooth_a.yaml
+overrides:
+  profiling:
+    worker_threads: 1

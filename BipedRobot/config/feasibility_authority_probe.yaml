@@ -1,0 +1,9 @@
+# Unapplied feasibility-only candidate. Not a pilot configuration.
+base_config: pilot_gait_smooth_a.yaml
+overrides:
+  action:
+    range_fraction: 0.75
+  actuator:
+    enable_delay: false
+    enable_lag: false
+    enable_backlash: false

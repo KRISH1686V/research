@@ -1,0 +1,149 @@
+# HER-Loco Configuration: 12-DOF Bipedal Robot with Realistic ST3215 Actuator Dynamics
+# Using robot design from BipedRobot (envs/assets/robot/Robot_description/urdf/robot_mujoco.xml)
+
+env:
+  xml_path: "BipedRobot/envs/assets/robot/Robot_description/urdf/robot_mujoco.xml"
+  frame_skip: 4                   # 200 Hz sim / 4 = 50 Hz control loop (dt = 0.02s)
+  achieved_goal_window_sec: 0.5   # 25 steps sliding window for achieved velocity
+  max_episode_steps: 500          # 10.0 seconds per episode
+  realism: easy
+  push_enabled: false
+
+robot:
+  default_qpos: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+action:
+  range_fraction: 0.80
+
+obs_scale:
+  joint_pos: 1.0
+  joint_vel: 0.05
+  base_ang_vel: 0.25
+  proj_gravity: 1.0
+  prev_action: 1.0
+
+actuator:
+  torque_limit: 2.94              # Feetech ST3215 stall torque rating (N*m)
+  delay_sec: 0.020                # 20 ms nominal serial bus command latency
+  delay_range: [0.010, 0.030]     # Randomizable latency bounds [10ms, 30ms]
+  servo_lag_tau: 0.020            # 20 ms first-order low-pass filter time constant
+  backlash_deadband: 0.005        # 0.005 rad (~0.28 deg) gear train backlash
+  enable_delay: true
+  enable_lag: true
+  enable_backlash: true
+
+domain_randomization:
+  enabled: true
+  friction_range: [0.6, 1.4]
+  mass_scale_range: [0.90, 1.10]
+  motor_strength_range: [0.85, 1.15]
+  push_interval: 125              # Apply horizontal disturbance push every 125 steps (2.5s)
+  push_magnitude: 6.0             # Disturbance force (N)
+
+termination:
+  min_torso_height: 0.14          # Fall detection threshold (m)
+  max_torso_height: 0.45
+  min_upright_cosine: 0.58        # Max allowable torso tilt (~54.5 degrees)
+
+goal_ranges:
+  vx: [-0.2, 0.6]                 # Target forward/backward velocity (m/s)
+  vy: [-0.2, 0.2]                 # Target lateral velocity (m/s)
+  wz: [-0.5, 0.5]                 # Target turning yaw rate (rad/s)
+
+curriculum:
+  enabled: true
+  initial_vx: [-0.1, 0.2]
+  initial_vy: [-0.05, 0.05]
+  initial_wz: [-0.15, 0.15]
+  success_threshold: 0.70
+  expansion_rate: 1.15
+  window_size: 30
+  p_zero_cmd: 0.25
+
+reward:
+  mode: track
+  sigma_v: 0.15                   # Velocity tracking exponential kernel scale (m/s)
+  sigma_w: 0.30                   # Angular rate exponential kernel scale (rad/s)
+  alive_bonus: 2.5                # Positive incentive for staying upright
+  fall_penalty: 25.0              # Strict penalty upon falling/premature termination
+  stand_safe_pose_weight: 5.0
+  stand_safe_symmetry_weight: 1.0
+  stand_safe_torque_weight: 2.0
+  stand_safe_action_weight: 1.0
+  ema_beta: 0.85                  # Exponential moving average filter coefficient
+  constraints:
+    torso_tilt:
+      budget: 0.05
+      fixed_weight: 2.0
+      lr: 0.05
+      lambda_min: 0.0
+      lambda_max: 10.0
+    torque_saturation_ratio:
+      budget: 0.05
+      fixed_weight: 1.5
+      lr: 0.05
+      lambda_min: 0.0
+      lambda_max: 10.0
+    foot_slip:
+      budget: 0.05
+      fixed_weight: 0.8
+      lr: 0.02
+      lambda_min: 0.0
+      lambda_max: 8.0
+    action_rate:
+      budget: 0.02
+      fixed_weight: 0.3
+      lr: 0.01
+      lambda_min: 0.0
+      lambda_max: 5.0
+    joint_limit_proximity:
+      budget: 0.01
+      fixed_weight: 1.5
+      lr: 0.05
+      lambda_min: 0.0
+      lambda_max: 10.0
+    foot_clearance:
+      budget: 0.02
+      fixed_weight: 0.6
+      lr: 0.02
+      lambda_min: 0.0
+      lambda_max: 6.0
+    energy:
+      budget: 0.08
+      fixed_weight: 0.15
+      lr: 0.01
+      lambda_min: 0.0
+      lambda_max: 4.0
+    gait_asymmetry:
+      budget: 0.10
+      fixed_weight: 0.5
+      lr: 0.02
+      lambda_min: 0.0
+      lambda_max: 5.0
+
+her:
+  capacity: 200000
+  relabel_strategy: "future"
+  relabel_k: 4
+
+sac:
+  hidden_dim: 256
+  actor_lr: 0.0003
+  critic_lr: 0.0003
+  alpha_lr: 0.0003
+  gamma: 0.99
+  tau: 0.005
+  batch_size: 256
+  updates_per_step: 1
+  warmup_steps: 2000
+
+ppo:
+  lr: 0.0003
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.01

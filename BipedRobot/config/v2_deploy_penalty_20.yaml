@@ -1,0 +1,141 @@
+# Budget-HER set up for survival: v2_budget plus alive bonus, budgets that start loose, and 5 frames of observation history.
+# A fixed penalty of 20 per unit of each cost, action filter alpha 0.3. One point on the trade-off curve that budget-HER should cover in a single run.
+# Budgets off, action filter alpha 0.3. The baseline that shows whether the filter alone brings walking, or budgets are needed too.
+# Sensors as on the real robot: angles rounded to encoder steps, joint speed from angle differences. Train with --actor_hide achieved,levels so the policy reads only what the robot can measure.
+# Command-HER baseline for budget-HER: the same setup with budgets switched off. Rates are far above any possible cost, and the budget input is fixed at u = 1 and never relabeled, so only the command is relabeled. The alive bonus stays.
+# Train with: --difficulty_ramp 0.4 --layer_norm --avg_q --ema_tau 0.002 --asym --mirror
+# AsterisCrack BipedRobot V2 at 1.66 kg (envs/assets/robotV2/make_train_xml.py). Starting values come from the designer's published training
+# config and servo fit, not from measurements on this robot: foot friction, backlash 1.5 deg, delay 0-50 ms, kp/kv, noise, biases.
+# Pushes are 3 N for 0.1 s (0.3 N s). Commands vx 0.1-0.3 m/s, centred on the gate's 0.2.
+# PROVISIONAL budget-as-goal HER (see fast/budget_env.py): v2_nogait plus token budgets.
+env:
+  xml_path: "/home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml"
+  require_xml: "/home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml"
+  frame_skip: 4
+  achieved_goal_window_sec: 0.5
+  max_episode_steps: 500
+  realism: easy
+  push_enabled: false
+robot:
+  default_qpos: [0.0, -0.174533, 0.0, -0.453786, -0.279253, 0.0, 0.0, -0.174533, 0.0, -0.453786, -0.279253, 0.0]  # home: hip pitch -10, knee -26, ankle pitch -16 deg; order r/l hip_z, hip_x (pitch), hip_y (roll), knee, ankle_y (pitch), ankle_x (roll)
+action:
+  range_fraction: 0.50
+obs_scale:
+  joint_pos: 1.0
+  joint_vel: 0.05
+  base_ang_vel: 0.25
+  proj_gravity: 1.0
+  prev_action: 1.0
+actuator:
+  torque_limit: 2.94
+  delay_sec: 0.020
+  delay_range: [0.0, 0.050]
+  servo_lag_tau: 0.020
+  backlash_deadband: 0.0262
+  enable_delay: true
+  enable_lag: true
+  enable_backlash: true
+domain_randomization:
+  enabled: true
+  friction_range: [0.25, 0.8]
+  mass_scale_range: [0.8, 1.2]
+  motor_strength_range: [0.85, 1.15]
+  push_interval: 125
+  push_magnitude: 3.0
+termination:
+  min_torso_height: 0.15
+  max_torso_height: 0.45
+  min_upright_cosine: 0.65
+goal_ranges:
+  vx: [0.1, 0.6]
+  vy: [-0.2, 0.2]
+  wz: [-0.5, 0.5]
+curriculum:
+  enabled: false
+  initial_vx: [0.1, 0.3]
+  initial_vy: [-0.05, 0.05]
+  initial_wz: [-0.15, 0.15]
+  success_threshold: 0.70
+  expansion_rate: 1.15
+  window_size: 30
+  p_zero_cmd: 0.20
+shaping:
+  gait_shaping: false
+  action_filter: true
+  prev_action_obs: true
+  smooth_penalties: true
+  reset_velocity: true
+  action_filter_alpha: 0.30
+  progress_weight: 0.30
+  air_time_weight: 3.0
+  single_support_weight: 0.05
+  swing_clearance_weight: 0.0
+  flight_penalty_weight: -0.5
+  zero_touchdown_weight: -0.3
+  action_rate_weight: 0.0
+  action_second_diff_weight: 0.0
+  joint_accel_weight: 0.0
+  posture_weight: 0.0
+  base_motion_weight: 0.0
+  smoothness_ramp: 1.0
+  smoothness_ramp_fraction: 0.4
+  reset_velocity_probability: 0.5
+reward:
+  mode: track
+  sigma_v: 0.15
+  sigma_w: 0.15
+  alive_bonus: 2.5
+  fall_penalty: 25.0
+  stand_safe_pose_weight: 5.0
+  stand_safe_symmetry_weight: 1.0
+  stand_safe_torque_weight: 2.0
+  stand_safe_action_weight: 1.0
+  ema_beta: 0.85
+her:
+  capacity: 200000
+  relabel_strategy: future
+  relabel_k: 4
+  n_sampled_goal: 2
+sac:
+  hidden_dim: 256
+  actor_lr: 0.0003
+  critic_lr: 0.0003
+  alpha_lr: 0.0003
+  gamma: 0.99
+  tau: 0.005
+  batch_size: 256
+  updates_per_step: 1
+  warmup_steps: 100
+  learning_starts: 5000
+
+# v2 profile-derived settings: no pilot launched.
+profiling:
+  device: cuda
+  main_threads: 4
+  worker_threads: 1
+  gradient_steps: -1
+validity:
+  friction: true
+  motor_torque: true
+  push_s: 0.1
+  servo_curve: {stall_nm: 6.53, noload_rad_s: 5.31, cap_nm: 2.94}
+  history: 5
+  obs_noise: {joint_pos: 0.002, joint_vel: 0.0, gyro: 0.02, gravity: 0.02}
+  encoder_rad: 0.00153398
+  joint_vel_from_position: true
+  obs_bias: {joint_pos: 0.0175, gyro: 0.02, gravity: 0.05}
+token_budget:
+  rate_min: [10.0, 10.0, 10.0]
+  rate_max: [20.0, 20.0, 20.0]
+  burst_steps: 100
+  p_unconstrained: 1.0
+  p_keep: 1.0
+  p_achieved: 0.0
+  alive_bonus: 0.2
+  curriculum: true
+  lagrange:
+    limit: [1.0, 1.0, 1.0]
+    lr: 0.0
+    every: 1000
+    init: 20.0
+    max: 100.0

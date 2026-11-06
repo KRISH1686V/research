@@ -1,0 +1,94 @@
+# Immutable training/evaluation settings reproduced from her_goal_tracking_v2.
+# Method-specific budget-goal fields are added by Phase 2 configs.
+env:
+  xml_path: "BipedRobot/envs/assets/robot/Robot_description/urdf/robot_mujoco.xml"
+  frame_skip: 4
+  achieved_goal_window_sec: 0.5
+  max_episode_steps: 500
+  realism: easy
+  push_enabled: false
+robot:
+  default_qpos: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+action:
+  range_fraction: 0.50
+obs_scale:
+  joint_pos: 1.0
+  joint_vel: 0.05
+  base_ang_vel: 0.25
+  proj_gravity: 1.0
+  prev_action: 1.0
+actuator:
+  torque_limit: 2.94
+  delay_sec: 0.020
+  delay_range: [0.010, 0.030]
+  servo_lag_tau: 0.020
+  backlash_deadband: 0.005
+  enable_delay: true
+  enable_lag: true
+  enable_backlash: true
+domain_randomization:
+  enabled: true
+  friction_range: [0.6, 1.4]
+  mass_scale_range: [0.90, 1.10]
+  motor_strength_range: [0.85, 1.15]
+  push_interval: 125
+  push_magnitude: 6.0
+termination:
+  min_torso_height: 0.15
+  max_torso_height: 0.45
+  min_upright_cosine: 0.65
+goal_ranges:
+  vx: [-0.2, 0.6]
+  vy: [-0.2, 0.2]
+  wz: [-0.5, 0.5]
+curriculum:
+  enabled: true
+  initial_vx: [-0.1, 0.2]
+  initial_vy: [-0.05, 0.05]
+  initial_wz: [-0.15, 0.15]
+  success_threshold: 0.70
+  expansion_rate: 1.15
+  window_size: 30
+  p_zero_cmd: 0.25
+reward:
+  mode: track
+  sigma_v: 0.15
+  sigma_w: 0.30
+  alive_bonus: 2.5
+  fall_penalty: 25.0
+  stand_safe_pose_weight: 5.0
+  stand_safe_symmetry_weight: 1.0
+  stand_safe_torque_weight: 2.0
+  stand_safe_action_weight: 1.0
+  ema_beta: 0.85
+  constraints:
+    torso_tilt: {budget: 0.05, fixed_weight: 2.0, lr: 0.05, lambda_min: 0.0, lambda_max: 10.0}
+    torque_saturation_ratio: {budget: 0.05, fixed_weight: 1.5, lr: 0.05, lambda_min: 0.0, lambda_max: 10.0}
+    foot_slip: {budget: 0.05, fixed_weight: 0.8, lr: 0.02, lambda_min: 0.0, lambda_max: 8.0}
+    action_rate: {budget: 0.02, fixed_weight: 0.3, lr: 0.01, lambda_min: 0.0, lambda_max: 5.0}
+    joint_limit_proximity: {budget: 0.01, fixed_weight: 1.5, lr: 0.05, lambda_min: 0.0, lambda_max: 10.0}
+    foot_clearance: {budget: 0.02, fixed_weight: 0.6, lr: 0.02, lambda_min: 0.0, lambda_max: 6.0}
+    energy: {budget: 0.08, fixed_weight: 0.15, lr: 0.01, lambda_min: 0.0, lambda_max: 4.0}
+    gait_asymmetry: {budget: 0.10, fixed_weight: 0.5, lr: 0.02, lambda_min: 0.0, lambda_max: 5.0}
+budget_goal:
+  enabled: true
+  costs: [torque_rms, torso_tilt, foot_slip, action_rate]
+  d_max: [1.0, 0.20, 1.0, 0.20]
+  min_budget: [0.10, 0.10, 0.10, 0.10]
+  p_all_unconstrained: 0.20
+  p_budget_relabel: 0.60
+  compliance_threshold: 0.90
+her:
+  capacity: 200000
+  relabel_strategy: future
+  relabel_k: 4
+sac:
+  hidden_dim: 256
+  actor_lr: 0.0003
+  critic_lr: 0.0003
+  alpha_lr: 0.0003
+  gamma: 0.99
+  tau: 0.005
+  batch_size: 256
+  updates_per_step: 1
+  warmup_steps: 2000
