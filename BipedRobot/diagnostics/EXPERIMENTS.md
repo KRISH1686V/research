@@ -1,7 +1,7 @@
 # Experiments: plan, queue and rules
 
 Started 11 Nov 2026. Live status of every run: `EXPERIMENTS_STATUS.md`, rewritten by
-`python audit_2026-10-31/claude_audit/v2/exp_status.py` (read only, safe any time).
+`python audit_2026-10-31/audit/v2/exp_status.py` (read only, safe any time).
 Predictions are written in `WORKING_RULES.md` before results; results go in `PROGRESS.md`.
 
 ## What the runs are for
@@ -46,7 +46,7 @@ Planned, not queued (they depend on the round 17 result):
 
 ## How the queue works
 
-| Step | Script (in `audit_2026-10-31/claude_audit/v2/`) |
+| Step | Script (in `audit_2026-10-31/audit/v2/`) |
 |---|---|
 | Round 16 | `lane_w16.txt` via `run_lane.sh`, started 10:15 |
 | Round 17 | scratchpad `start_r17.sh`: waits for round 16, runs the GPU-only tests through MPS with nothing else training, starts `lane_w17.txt` (seed 11 of all four, then seed 12) only if they pass. Scratchpad `wait_r17all.sh` then runs the budget sweep, shake test and hwtest on each |

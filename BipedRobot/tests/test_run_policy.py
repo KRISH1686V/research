@@ -17,7 +17,7 @@ import torch
 import yaml
 
 REPO = Path(__file__).resolve().parents[1]
-TOOLS = REPO / "diagnostics/audit_2026-10-31/claude_audit/v2/hardware_tests"
+TOOLS = REPO / "diagnostics/audit_2026-10-31/audit/v2/hardware_tests"
 sys.path.insert(0, str(REPO.parent))
 sys.path.insert(0, str(TOOLS))
 import export_policy  # noqa: E402

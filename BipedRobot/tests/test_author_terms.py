@@ -10,7 +10,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2/hardware_tests"))
+sys.path.insert(0, str(ROOT / "BipedRobot/diagnostics/audit_2026-10-31/audit/v2/hardware_tests"))
 from BipedRobot.fast.collector import env_class  # noqa: E402
 from BipedRobot.fast.mirror import action_perm, obs_maps  # noqa: E402
 from BipedRobot.fast.nets import Actor, actor_from_checkpoint  # noqa: E402

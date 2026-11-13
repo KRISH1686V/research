@@ -100,7 +100,7 @@ lambda(s, b) = dQ(s, a, b) / db
 
 This specification does not contain the roadmap's soft-termination price Bellman or curvature equations, because their exact form was in another missing doc (`price-bellman-theorem`). They must be re-derived and re-checked before E-D.
 
-A small exact check is done (`claude_audit/v2/price_toy.py`, `price_toy.json`): two actions, value iteration on the balance, multiplier known in closed form (0.70). V rises by the multiplier per token within 5% at rates 0.05 to 0.2, 14% at 0.4, and 62% off at 0.8, where the burst outlasts the discount horizon and the limit hardly binds. Two consequences for E-D, as hypotheses for the neural case:
+A small exact check is done (`audit/v2/price_toy.py`, `price_toy.json`): two actions, value iteration on the balance, multiplier known in closed form (0.70). V rises by the multiplier per token within 5% at rates 0.05 to 0.2, 14% at 0.4, and 62% off at 0.8, where the burst outlasts the discount horizon and the limit hardly binds. Two consequences for E-D, as hypotheses for the neural case:
 
 - Read prices where the limit binds and the bucket is not full.
 - Measure across one action's cost, not by a local derivative: V(b) is a staircase with a step every `rate`, and the local slope was up to 10 times the multiplier in this example.

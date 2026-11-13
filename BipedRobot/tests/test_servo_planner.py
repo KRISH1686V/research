@@ -10,7 +10,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-HW = ROOT / "BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2/hardware_tests"
+HW = ROOT / "BipedRobot/diagnostics/audit_2026-10-31/audit/v2/hardware_tests"
 sys.path.insert(0, str(HW))
 CONFIG = ROOT / "BipedRobot/config/v2_deploy_budget_alpha30_heeltoe_ref.yaml"
 FIT = {"accel_rad_s2": 9.0, "accel_range": [7.5, 10.5], "dead_s": [0.0, 0.02]}

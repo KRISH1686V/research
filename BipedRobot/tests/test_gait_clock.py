@@ -10,7 +10,7 @@ import yaml
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO.parent))
-sys.path.insert(0, str(REPO / "diagnostics/audit_2026-10-31/claude_audit/v2/hardware_tests"))
+sys.path.insert(0, str(REPO / "diagnostics/audit_2026-10-31/audit/v2/hardware_tests"))
 import export_policy  # noqa: E402
 import run_policy as rp  # noqa: E402
 from BipedRobot.fast.budget_env import BudgetLocoEnv  # noqa: E402

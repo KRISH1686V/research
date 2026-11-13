@@ -1,4 +1,4 @@
-# 2026-11-01 variant (Claude audit): variant_min_fullrange with sigma_w 0.30 -> 0.15 so that
+# 2026-11-01 variant (audit): variant_min_fullrange with sigma_w 0.30 -> 0.15 so that
 # turn-rate (wz) tracking errors cost reward; at 0.30 the tolerance exceeded the trained wz range.
 # Only reward.sigma_w differs from variant_min_fullrange.yaml.
 # A-min pilot: Run A without overlapping hand-set smoothness/clearance terms.

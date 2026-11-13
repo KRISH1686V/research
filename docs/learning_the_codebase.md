@@ -19,7 +19,7 @@ Read these files in this order, because each step uses the one before it. All pa
 3. **Your formula:** `fast/budget_replay.py`. This is the core of your contribution. Look at `window_levels` and `sample`.
 4. **Learning:** `fast/replay.py`, `fast/learner.py`, `fast/nets.py` and `fast/mirror.py`. Look for how SAC updates the networks, and what the policy is allowed to see.
 5. **The training loop:** `fast/train.py` and `fast/collector.py`. Look for how all the parts are joined.
-6. **Scoring and tests:** `evaluation_suite_v2.py`, the tools in `diagnostics/audit_2026-10-31/claude_audit/v2/`, and `tests/`. Look for how a result is measured and how the code is checked.
+6. **Scoring and tests:** `evaluation_suite_v2.py`, the tools in `diagnostics/audit_2026-10-31/audit/v2/`, and `tests/`. Look for how a result is measured and how the code is checked.
 
 Tip: each file starts with a note at the top that says what it does and why. Read that note before the code.
 
@@ -192,11 +192,11 @@ The key idea: the critic can use information the robot lacks, because the critic
 | inside `main` | Ramps up the difficulty over the first 1.92 million steps, and loosens budgets early on |
 | inside `main` | Saves a checkpoint every 400,000 steps, and logs costs and losses to `progress.csv` |
 
-A run's settings come from a config file in `config/`. The main one is `config/v2_deploy_budget_alpha30.yaml`. The new style budgets add one line each, for example `costs: [flight, slip, torque, steps]` in `v2_deploy_budget_alpha30_steps.yaml`. The script that starts a full run, `diagnostics/audit_2026-10-31/claude_audit/v2/run_budget_deploy.sh`, shows every command-line option used.
+A run's settings come from a config file in `config/`. The main one is `config/v2_deploy_budget_alpha30.yaml`. The new style budgets add one line each, for example `costs: [flight, slip, torque, steps]` in `v2_deploy_budget_alpha30_steps.yaml`. The script that starts a full run, `diagnostics/audit_2026-10-31/audit/v2/run_budget_deploy.sh`, shows every command-line option used.
 
 ## Step 6: scoring and tests
 
-Every result is measured on test episodes the policy never trained on, and the code is checked by tests that compare it with slow, simple versions. The scoring tools are in `diagnostics/audit_2026-10-31/claude_audit/v2/`.
+Every result is measured on test episodes the policy never trained on, and the code is checked by tests that compare it with slow, simple versions. The scoring tools are in `diagnostics/audit_2026-10-31/audit/v2/`.
 
 | Where | What it does |
 | --- | --- |
@@ -232,7 +232,7 @@ $PY -m pytest BipedRobot/tests/test_budget_window.py -q
 3. Watch a bucket drain. This runs random actions at the tightest budget and prints the costs, bucket levels and reward every 10 steps. The script is in the project:
 
 ```bash
-$PY BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2/watch_bucket.py
+$PY BipedRobot/diagnostics/audit_2026-10-31/audit/v2/watch_bucket.py
 ```
 
 You should see the first level (flight) fall from 1 to −1, "over" turn True, and the reward drop to 0.2, the bonus for staying up.
@@ -240,7 +240,7 @@ You should see the first level (flight) fall from 1 to −1, "over" turn True, a
 4. Score the 7.2 million step policies against the walking goal:
 
 ```bash
-cd BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2
+cd BipedRobot/diagnostics/audit_2026-10-31/audit/v2
 $PY goal_score.py "goal7m/deploylong7m_s{s}.json" "goal7m/deploycmdlong7m_s{s}.json"
 ```
 
@@ -249,7 +249,7 @@ $PY goal_score.py "goal7m/deploylong7m_s{s}.json" "goal7m/deploycmdlong7m_s{s}.j
 ```bash
 cd /home/rpuser1/yasho/rl
 N=fast_deploylong7m_20261102_seed4
-$PY BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2/gait_report.py mine BipedRobot/checkpoints/$N/seed_4/sb3_her_final.pt BipedRobot/runs/$N/seed_4/resolved_config.yaml /tmp/mine.json medium 10 9700:9703 all_mid
+$PY BipedRobot/diagnostics/audit_2026-10-31/audit/v2/gait_report.py mine BipedRobot/checkpoints/$N/seed_4/sb3_her_final.pt BipedRobot/runs/$N/seed_4/resolved_config.yaml /tmp/mine.json medium 10 9700:9703 all_mid
 ```
 
 It prints steps per second, foot lift, flat-foot share and more.

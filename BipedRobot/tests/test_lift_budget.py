@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "diagnostics/audit_2026-10-31/claude_audit/v2"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "diagnostics/audit_2026-10-31/audit/v2"))
 from BipedRobot.fast.collector import NO_COST, _pad_cost  # noqa: E402
 from BipedRobot.tests.test_budget_her import make_env  # noqa: E402
 from budget_eval import BUDGETS, pad_budget  # noqa: E402

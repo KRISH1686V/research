@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-HW = Path(__file__).resolve().parents[1] / "diagnostics/audit_2026-10-31/claude_audit/v2/hardware_tests"
+HW = Path(__file__).resolve().parents[1] / "diagnostics/audit_2026-10-31/audit/v2/hardware_tests"
 sys.path.insert(0, str(HW))
 
 

@@ -1,7 +1,7 @@
 # Technical Note: Gait Kinematics, Torque Saturation Physics, and Author Comparison
 
 **Date:** 5 November 2026  
-**Audience:** Claude, Antigravity, and Project Engineers  
+**Audience:** the assistant, Antigravity, and Project Engineers  
 **Target Platform:** 12-DOF Bipedal Robot (Feetech / Waveshare ST3215 bus servos, 2.94 N·m stall limit)  
 **Primary Question:** Why does the upstream author's policy lift each leg high while the pure Budget-HER policy takes rapid, low-clearance steps ("tryharding" forward)? Why does high leg lifting cause massive motor torque saturation, and how can we safely achieve high-lift walking on physical hardware?
 

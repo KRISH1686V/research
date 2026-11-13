@@ -1,4 +1,4 @@
-# 2026-10-31 variant (Claude audit): pilot_gait_min_v2 with curriculum disabled and the
+# 2026-10-31 variant (audit): pilot_gait_min_v2 with curriculum disabled and the
 # full goal range sampled from step 0 (curriculum expansion scales both ends of the
 # range, so it would drop slow commands). Only the curriculum block differs.
 # A-min pilot: Run A without overlapping hand-set smoothness/clearance terms.

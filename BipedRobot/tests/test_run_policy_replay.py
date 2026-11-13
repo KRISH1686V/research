@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-HW = ROOT / "BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2/hardware_tests"
+HW = ROOT / "BipedRobot/diagnostics/audit_2026-10-31/audit/v2/hardware_tests"
 sys.path.insert(0, str(HW))
 import run_policy  # noqa: E402
 from robot_test import Abort  # noqa: E402

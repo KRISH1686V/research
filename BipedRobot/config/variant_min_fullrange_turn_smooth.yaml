@@ -1,4 +1,4 @@
-# 2026-11-01 variant (Claude audit): variant_min_fullrange_turn plus smoother actions.
+# 2026-11-01 variant (audit): variant_min_fullrange_turn plus smoother actions.
 # action_rate_weight 0 -> 0.3 (about 0.07 reward/step at the measured 0.49 RMS action change, vs
 # about 0.012 for Smooth-A's 0.05) and action_filter_alpha 0.6 -> 0.3 (EMA time constant 22 -> 56 ms).
 # A-min pilot: Run A without overlapping hand-set smoothness/clearance terms.

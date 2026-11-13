@@ -37,7 +37,7 @@ python -m pytest BipedRobot/tests
 Evaluate a model at tight, middle and loose budgets:
 
 ```bash
-cd BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2
+cd BipedRobot/diagnostics/audit_2026-10-31/audit/v2
 python compare_eval.py deploylong7mr17w 11 --u 0,0,0 0.5,0.5,0.5 1,1,1
 ```
 

@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2/hardware_tests"))
+sys.path.insert(0, str(ROOT / "BipedRobot/diagnostics/audit_2026-10-31/audit/v2/hardware_tests"))
 import robot_test  # noqa: E402
 
 LOCK = 0x37

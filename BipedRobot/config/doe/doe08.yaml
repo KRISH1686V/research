@@ -1,4 +1,4 @@
-# Stage 1 screening run 8. On: A E L Q R. See claude_audit/v2/doe.py.
+# Stage 1 screening run 8. On: A E L Q R. See audit/v2/doe.py.
 env:
   xml_path: /home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml
   require_xml: /home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml

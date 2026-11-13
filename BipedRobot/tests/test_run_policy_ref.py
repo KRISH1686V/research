@@ -7,7 +7,7 @@ import pytest
 import torch
 
 ROOT = Path(__file__).resolve().parents[2]
-HW = ROOT / "BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2/hardware_tests"
+HW = ROOT / "BipedRobot/diagnostics/audit_2026-10-31/audit/v2/hardware_tests"
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(HW))
 RESOLVED = ROOT / "BipedRobot/runs/fast_deploylong7mheeltoe_20261102_seed3/seed_3/resolved_config.yaml"
