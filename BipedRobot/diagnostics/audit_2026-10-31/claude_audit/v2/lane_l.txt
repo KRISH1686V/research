@@ -1,0 +1,6 @@
+deploylong7msteps config/v2_deploy_budget_alpha30_steps.yaml 7
+deploylong7msteps config/v2_deploy_budget_alpha30_steps.yaml 5
+deploylong7msteps config/v2_deploy_budget_alpha30_steps.yaml 6
+deploycmdlong7mplain config/v2_deploy_plain_alpha30.yaml 5
+deploycmdlong7mplain config/v2_deploy_plain_alpha30.yaml 6
+deploycmdlong7mplain config/v2_deploy_plain_alpha30.yaml 7

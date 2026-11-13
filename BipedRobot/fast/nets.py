@@ -32,9 +32,13 @@ def actor_inputs(obs_dim: int, n_goal: int, n_levels: int, hide: set[str]) -> li
 
 
 class Actor(nn.Module):
-    def __init__(self, obs_dim: int, act_dim: int, hidden: int = 256, init_log_std: float | None = None, keep: list[int] | torch.Tensor | None = None):
+    def __init__(self, obs_dim: int, act_dim: int, hidden: int = 256, init_log_std: float | None = None, keep: list[int] | torch.Tensor | None = None, mirror: dict | None = None):
+        """mirror: {obs_perm, obs_sign, act_perm} makes the policy exactly left-right symmetric, the designer's equivariant actor: pi(s) = 1/2 (f(s) + M f(M s)). Off by default."""
         super().__init__()
         self.register_buffer("keep", None if keep is None else torch.as_tensor(keep, dtype=torch.int64))
+        self.register_buffer("obs_perm", None if mirror is None else torch.as_tensor(mirror["obs_perm"], dtype=torch.int64))
+        self.register_buffer("obs_sign", None if mirror is None else torch.as_tensor(mirror["obs_sign"], dtype=torch.float32))
+        self.register_buffer("act_perm", None if mirror is None else torch.as_tensor(mirror["act_perm"], dtype=torch.int64))
         self.latent_pi = _mlp([obs_dim if keep is None else len(keep), hidden, hidden], out=False)
         self.mu = nn.Linear(hidden, act_dim)
         self.log_std = nn.Linear(hidden, act_dim)
@@ -43,9 +47,16 @@ class Actor(nn.Module):
                 self.log_std.weight.mul_(0.01)
                 self.log_std.bias.fill_(init_log_std)
 
-    def dist_params(self, obs: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    def _raw(self, obs: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         h = self.latent_pi(obs if self.keep is None else obs[..., self.keep])
-        return self.mu(h), self.log_std(h).clamp(LOG_STD_MIN, LOG_STD_MAX)
+        return self.mu(h), self.log_std(h)
+
+    def dist_params(self, obs: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        mean, log_std = self._raw(obs)
+        if self.obs_perm is not None:
+            mean_m, log_std_m = self._raw(obs[..., self.obs_perm] * self.obs_sign)
+            mean, log_std = 0.5 * (mean + mean_m[..., self.act_perm]), 0.5 * (log_std + log_std_m[..., self.act_perm])
+        return mean, log_std.clamp(LOG_STD_MIN, LOG_STD_MAX)
 
     def sample(self, obs: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """Reparameterised squashed sample and its log-probability, as SquashedDiagGaussianDistribution."""
@@ -63,8 +74,10 @@ class Actor(nn.Module):
 
 def actor_from_checkpoint(state: dict) -> Actor:
     """Rebuild the policy from a plain-weights checkpoint written by train.py."""
-    actor = Actor(state["obs_dim"], state["act_dim"], keep=state["actor"].get("keep"))
-    actor.load_state_dict(state["actor"])
+    sd = state["actor"]
+    mirror = {k: sd[k] for k in ("obs_perm", "obs_sign", "act_perm")} if "obs_perm" in sd else None
+    actor = Actor(state["obs_dim"], state["act_dim"], keep=sd.get("keep"), mirror=mirror)
+    actor.load_state_dict(sd)
     return actor.eval()
 
 

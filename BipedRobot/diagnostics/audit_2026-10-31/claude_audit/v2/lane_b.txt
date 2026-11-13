@@ -1,0 +1,4 @@
+deployprog10slowyaw config/v2_deploy_budget_alpha30_prog10_slowyaw.yaml 5
+deployprog10slowyaw config/v2_deploy_budget_alpha30_prog10_slowyaw.yaml 6
+deployprog10b config/v2_deploy_budget_alpha30_prog10.yaml 7
+deploycmdprog10 config/v2_deploy_cmd_alpha30_prog10.yaml 5

@@ -87,6 +87,8 @@ class GaitCostEnv(HERLocoEnv):
         self._slip_sum += float(slip[loaded].sum())
         if not loaded.any() and nonfoot <= self.force_threshold_n:
             self._n_flight += 1
+        if getattr(self, "swing_contact_weight", 0.0):
+            self.swing_substep(fn)  # ValidLocoEnv's shaping.swing_contact
         if self.substep_observer is not None:
             self.substep_observer(fn, slip, nonfoot)
 

@@ -1,0 +1,8 @@
+deploylong7mr17j config/v2_deploy_budget_alpha30_r17j_fit.yaml 11
+deploylong7mr17w config/v2_deploy_budget_alpha30_r17w_fit.yaml 11
+deploylong7mr17n config/v2_deploy_budget_alpha30_r17n_fit.yaml 11
+deploylong7mr17h config/v2_deploy_budget_alpha30_r17h_fit.yaml 11
+deploylong7mr17j config/v2_deploy_budget_alpha30_r17j_fit.yaml 12
+deploylong7mr17w config/v2_deploy_budget_alpha30_r17w_fit.yaml 12
+deploylong7mr17n config/v2_deploy_budget_alpha30_r17n_fit.yaml 12
+deploylong7mr17h config/v2_deploy_budget_alpha30_r17h_fit.yaml 12

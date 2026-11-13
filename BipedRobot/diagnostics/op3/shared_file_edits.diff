@@ -1,0 +1,59 @@
+--- a/fast/collector.py	2026-11-06 07:20:21.496344088 +0530
++++ fast/collector.py	2026-11-12 21:10:13.563397945 +0530
+@@ -29,7 +29,11 @@
+ 
+ 
+ def env_class(env_config: dict):
+-    """BudgetLocoEnv for token budgets, ValidLocoEnv for realism corrections, otherwise the plain env."""
++    """BudgetLocoEnv for token budgets, ValidLocoEnv for realism corrections, otherwise the plain env. A config naming env.robot_type (12 Nov 2026: "op3",
++    the Robotis OP3 in envs/op3) gets that robot's classes; without it nothing changes."""
++    if env_config.get("robot_type"):
++        from BipedRobot.envs.op3.op3_env import op3_env_class
++        return op3_env_class(env_config)
+     if env_config.get("token_budget"):
+         return BudgetLocoEnv
+     return ValidLocoEnv if env_config.get("validity") else HERLocoEnv
+--- a/fast/train.py	2026-11-11 10:51:25.031745865 +0530
++++ fast/train.py	2026-11-12 21:10:15.911493825 +0530
+@@ -34,6 +34,16 @@
+ REPO = Path(__file__).resolve().parents[1]
+ HASHED = ["fast/__init__.py", "fast/collector.py", "fast/export_sb3.py", "fast/learner.py", "fast/nets.py", "fast/replay.py", "fast/train.py", "fast/valid_env.py", "fast/budget_env.py", "fast/budget_replay.py", "fast/gait_costs.py", "fast/mirror.py",
+           "envs/her_loco_env.py", "envs/rewards/shared_reward.py"]
++# 12 Nov 2026: files of a second robot, hashed only for runs whose config names it in env.robot_type.
++ROBOT_HASHED = {"op3": ["envs/op3/op3_env.py", "envs/op3/mirror.py", "envs/op3/make_train_xml.py", "envs/assets/robotis_op3/op3_train.xml", "envs/assets/robotis_op3/scene_train.xml"]}
++
++
++def _mirror_maps(env_config: dict) -> tuple:
++    """(action_perm, obs_maps, priv_maps): the biped's from fast/mirror.py, or the OP3's (envs/op3/mirror.py) when env.robot_type is "op3" (12 Nov 2026)."""
++    if env_config.get("robot_type") == "op3":
++        from BipedRobot.envs.op3 import mirror as op3_mirror
++        return op3_mirror.action_perm, op3_mirror.obs_maps, op3_mirror.priv_maps
++    return action_perm, obs_maps, priv_maps
+ 
+ 
+ def _args() -> argparse.Namespace:
+@@ -93,7 +103,8 @@
+     lr, gamma, tau = float(sac["actor_lr"]), float(sac["gamma"]), float(sac["tau"])
+     meta = argparse.Namespace(**vars(args), algo="sac", reward_mode="track", relabel_strategy="future", n_sampled_goal=k_goal, stand_only=False)
+     _write_run_metadata(str(run_dir), config, env_config, meta)
+-    (run_dir / "code_hashes.json").write_text(json.dumps({f: hashlib.sha256((REPO / f).read_bytes()).hexdigest() for f in HASHED}, indent=1))
++    hashed = HASHED + ROBOT_HASHED.get(env_config.get("robot_type"), [])
++    (run_dir / "code_hashes.json").write_text(json.dumps({f: hashlib.sha256((REPO / f).read_bytes()).hexdigest() for f in hashed}, indent=1))
+ 
+     probe = env_class(env_config)(config=copy.deepcopy(env_config), render_mode=None)
+     if env_config.get("require_xml") and probe.xml_path != os.path.abspath(env_config["require_xml"]):
+@@ -118,10 +129,11 @@
+     actor_keep = actor_inputs(obs_dim, 3 + n_budget, n_budget, hide) if hide else None
+     mirror = None
+     if args.mirror:
+-        op, os_ = obs_maps(frames, n_budget, clock, slow_yaw)
+-        mirror = {"obs_perm": op, "obs_sign": os_, "act_perm": action_perm()}
++        act_perm_fn, obs_maps_fn, priv_maps_fn = _mirror_maps(env_config)
++        op, os_ = obs_maps_fn(frames, n_budget, clock, slow_yaw)
++        mirror = {"obs_perm": op, "obs_sign": os_, "act_perm": act_perm_fn()}
+         if priv_dim:
+-            pp, ps = priv_maps(priv_dim - 42 - priv_signed, priv_signed)
++            pp, ps = priv_maps_fn(priv_dim - 42 - priv_signed, priv_signed)
+             mirror.update(priv_perm=pp, priv_sign=ps)
+     actor_mirror = None
+     if config.get("equivariant_actor"):  # the designer's exactly left-right symmetric policy, 9 Nov 2026; off unless the config sets it

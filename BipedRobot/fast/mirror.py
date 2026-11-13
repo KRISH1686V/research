@@ -48,7 +48,8 @@ def obs_maps(frames: int, n_budget: int = 0, clock: bool = False, slow_yaw: bool
     return np.concatenate(perm), np.concatenate(sign)
 
 
-def priv_maps(extra: int = 4) -> tuple[np.ndarray, np.ndarray]:
-    """Critic-only state: one clean frame plus physical parameters, which do not change under mirroring."""
+def priv_maps(extra: int = 4, signed: int = 0) -> tuple[np.ndarray, np.ndarray]:
+    """Critic-only state: one clean frame plus physical parameters, which do not change under mirroring, then `signed` values that change sign
+    (shaping.straight's heading change and sideways offset)."""
     fp, fs = frame_maps()
-    return np.r_[fp, 42 + np.arange(extra)], np.r_[fs, np.ones(extra)]
+    return np.r_[fp, 42 + np.arange(extra + signed)], np.r_[fs, np.ones(extra), -np.ones(signed)]

@@ -1,0 +1,18 @@
+sigmav config/variant_min_sigmav.yaml 3
+sigmav config/variant_min_sigmav.yaml 4
+sigmav config/variant_min_sigmav.yaml 5
+bounds config/variant_min_bounds.yaml 3
+bounds config/variant_min_bounds.yaml 4
+bounds config/variant_min_bounds.yaml 5
+lownoise config/pilot_gait_min_v2.yaml 3 --init_log_std -3 --init_alpha 0.01
+lownoise config/pilot_gait_min_v2.yaml 4 --init_log_std -3 --init_alpha 0.01
+lownoise config/pilot_gait_min_v2.yaml 5 --init_log_std -3 --init_alpha 0.01
+nstep3 config/pilot_gait_min_v2.yaml 3 --n_step 3
+nstep3 config/pilot_gait_min_v2.yaml 4 --n_step 3
+nstep3 config/pilot_gait_min_v2.yaml 5 --n_step 3
+layernorm config/pilot_gait_min_v2.yaml 3 --layer_norm
+layernorm config/pilot_gait_min_v2.yaml 4 --layer_norm
+layernorm config/pilot_gait_min_v2.yaml 5 --layer_norm
+avgq config/pilot_gait_min_v2.yaml 3 --avg_q
+avgq config/pilot_gait_min_v2.yaml 4 --avg_q
+avgq config/pilot_gait_min_v2.yaml 5 --avg_q

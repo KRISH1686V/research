@@ -1,0 +1,201 @@
+# ROUND 3 ROBUST (8 Nov 2026). SHAPED. v2_deploy_budget_alpha30_robust_fit.yaml (combo + wider servo, delay, gear-play and centre-of-mass randomisation) with the round-3 fixes from the tournament and gait inspection: swing height reward weight 1.0
+# and target +4 mm (combo lifted 15-18 mm), upright roll width 5 deg (torso rocked 15-21 deg per step), shaping.hip_yaw_hold 0.3 (hips twisted 5-14 deg),
+# shaping.speed_margin 0.5 (joints under 80% of no-load).
+# ROBUST (7 Nov 2026, the owner: the best chance of walking on the real robot at the first try). SHAPED. v2_deploy_budget_alpha30_combo_fit.yaml
+# with wider randomisation for what has not been measured on the robot: servo power and speed 80-100% (duty_range), delay 0-40 ms (was 0-20), gear play
+# 0.5 deg (was 0.2), torso centre of mass shifted up to 12 mm fore-aft and 6 mm sideways per episode (com_offset_m).
+# COMBO (7 Nov 2026, the Monday candidate at 2 steps/s). SHAPED, a combined product run: v2_deploy_budget_alpha30_cleanbase_fit.yaml with the
+# flat-foot penalty x2 (cleanflat2), filter alpha 0.2 and raw_action_rate 0.05 (cleansmooth), the new shaping.upright (0.5, pitch 4 deg, roll 8 deg; the
+# owner: the torso must not lean), 15% in place, speed kernel v_rel 0.4 and v_min 0.03, phase_margin 0.05. Commands 0.03-0.07 m/s as cleanbase.
+# CLEAN GAIT (6 Nov 2026, from the owner's Deep Think plan, changes 2, 3 on the flat-foot arm, full servo duty). SHAPED.
+# v2_deploy_budget_alpha30_straightflat_fit.yaml plus:
+#  2. her.relabel_dims [vx] (vy, wz keep the stored 0) and shaping.straight (heading and sideways offset from the start, weight 1.0)
+#  3. commands: 30% stepping in place, else vx 0.03-0.07, vy = wz = 0; gait_always, since the shared reward drops all gait terms at |goal| <= 0.1 m/s
+#     (needed for 3 to work at all); swing height 22 mm (fast/gait_ref.py, flat sole, 2 steps/s: 30 mm needs 4.9 rad/s in place, 20 mm stays under 4 rad/s
+#     to about 0.06 m/s)
+#  Pair: same as deploylong7mclean except change 5 (no swing_contact, fall penalty 25, swing height std 12 mm).
+#  Full servo duty: the owner will set hardware.yaml's torque cap to 1000 for ground tests (6 Nov 21:10), so no duty randomisation.
+# FLAT FOOT (6 Nov 2026, 21:00): v2_deploy_budget_alpha30_straight_fit.yaml with one change, shaping.foot_flat.axes both (was roll). The owner's ground
+# test: the robot walked on its toes, tilted forward and fell without support. In the simulator the policies stand on toe or edge most of the loaded time
+# (plain 7.2M: whole sole 1%, toe 28-32%, edge 65-71%; designer-style and heel-toe: whole sole 6-18%, toe 47-58%). The toe allowance was for 0.2 m/s,
+# which needs heel-off; at 0.05-0.15 m/s a whole-sole walk at 2 steps/s fits the servos (finding of 6 Nov 12:20). Paired with straight_fit seeds 3, 4.
+# STRAIGHT STEP (6 Nov 2026, the owner: speed is not the target; walk straight, lift a leg, place it, lift the other, place it; train on the measured
+# servo). SHAPED and a product run, not a one-change test: v2_deploy_budget_alpha30_author_fit.yaml (designer-style walk, fitted servo) with, from the
+# diagnosis of the 7.2M designer-style and heel-toe arms (PROGRESS 6 Nov 18:15-18:55):
+#  - clock 1.0 Hz (2 steps/s, the owner's number; was 1.11)
+#  - achieved-goal window 1.0 s = one gait cycle (was 0.5 s): the step-to-step yaw and speed swing cancels, so tracking sees the real mean turn and speed
+#  - yaw tracking width w_min 0.10 rad/s (was 0.15): a 0.09 rad/s curve keeps 44% of tracking instead of 70%
+#  - slow yaw input, mean sensed yaw rate over 1 s (new to this arm): the policy could not sense a slow turn in 5 frames (0.1 s) of a gyro that swings every step
+#  - feet on the clock, phase_weight 0.5 (was 0.1): a foot down when the clock lifts it costs 0.25 a step, so the mid-swing touchdowns are no longer cheap
+#  - swing height on the clock, weight 0.6 (was 0.3), 30 mm (was 25)
+#  - commands vx 0.05-0.15 m/s (was 0.1-0.3): speed is not the target; at 2 steps/s 0.1 m/s is 5 cm steps
+# Deploy: --clear-accel-cap --servo-accel 0, heading hold on, command 0.1, hardware.yaml torque cap 1000 (training assumes full torque).
+# SERVO FIT (6 Nov 2026): v2_deploy_budget_alpha30_author.yaml with one change, the servo model fitted to the robot's step and sine tests with the acceleration cap cleared
+# (robot_test --clear-accel-cap, speed 3400, accel 0 = the 'free' setting; run the policy with --clear-accel-cap --servo-accel 0). Fit with
+# hardware_tests/sim_servo.py: delay 0-20 ms (was 0-50), lag 10 ms (was 20), backlash 0.2 deg (was 1.5). Unloaded fit; loaded behaviour NOT DETERMINED.
+# SHAPED, after the designer's walk on his real robot (commit 8dc0ef4, 4 Nov 2026, no gait table). The owner's choice (6 Nov): walk like his, heel lifting
+# at the end of the step is fine. From his reward: relative tracking kernel, gait clock (his 0.9 s cycle at low speed, here fixed), feet on the clock
+# (phase_weight), swing foot on a 25 mm bump timed by the clock (clock_height), touchdown air time and flight penalty (gait_shaping), edge-stance penalty
+# with heel and toe free (foot_flat roll), foot drag. Weights scaled by 1.3 / 3.5 from his to this reward. Budgets: the three core ones only.
+# SHAPED: v2_deploy_budget_alpha30_human_rel plus a gait clock and hand-tuned gait rewards, after the designer's 4 Nov 2026 walk without a gait table.
+# Clock 1.0 Hz (2 steps/s) read by the policy; feet on the clock's timing (phase_weight 0.1); swing foot on a 25 mm sine bump timed by the clock
+# (clock_height 0.3, std 12 mm); and the env's gait shaping (touchdown air time, single support, flight and still-step penalties). Weights scaled from his
+# config to this reward (his tracking totals 3.5, ours 1.3). Report apart from unshaped results. Same budgets as the unshaped arm.
+# v2_deploy_budget_alpha30_human with the designer's relative tracking kernel (4 Nov 2026): width max(0.7 |cmd|, 0.07), so standing at 0.2 m/s earns 0.13 of
+# tracking instead of 0.41. The step budget made the robot stand still; this tests whether that was the old kernel paying for standing.
+# v2_deploy_budget_alpha30 with three style budgets added together: steps, low steps (lift under 20 mm) and tilted stance (sole over 8 degrees).
+# Each budget can be set loose at test time, which shows what each one changes.
+# Budget-HER set up for survival: v2_budget plus alive bonus, budgets that start loose, and 5 frames of observation history.
+# Stronger action filter, alpha 0.3 instead of 0.6, to test whether it brings a slower, cleaner step. The filter also runs on the robot, so this is not a hand-tuned gait reward.
+# Sensors as on the real robot: angles rounded to encoder steps, joint speed from angle differences. Train with --actor_hide achieved,levels so the policy reads only what the robot can measure.
+# Bucket memory bounded to 100 steps (2 s), so an overdraft can be recovered from. Ranges from costs measured on the first survival runs: walking used flight 0.004-0.02, slip 0.02-0.06, torque 0.01-0.03; bounding 0.1-0.2 on all three.
+# Train with: --difficulty_ramp 0.4 --layer_norm --avg_q --ema_tau 0.002 --asym --mirror
+# AsterisCrack BipedRobot V2 at 1.66 kg (envs/assets/robotV2/make_train_xml.py). Starting values come from the designer's published training
+# config and servo fit, not from measurements on this robot: foot friction, backlash 1.5 deg, delay 0-50 ms, kp/kv, noise, biases.
+# Pushes are 3 N for 0.1 s (0.3 N s). Commands vx 0.1-0.3 m/s, centred on the gate's 0.2.
+# PROVISIONAL budget-as-goal HER (see fast/budget_env.py): v2_nogait plus token budgets.
+env:
+  xml_path: "/home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml"
+  require_xml: "/home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml"
+  frame_skip: 4
+  achieved_goal_window_sec: 1.0  # one gait cycle (straight step)
+  max_episode_steps: 500
+  realism: easy
+  push_enabled: false
+robot:
+  default_qpos: [0.0, -0.174533, 0.0, -0.453786, -0.279253, 0.0, 0.0, -0.174533, 0.0, -0.453786, -0.279253, 0.0]  # home: hip pitch -10, knee -26, ankle pitch -16 deg; order r/l hip_z, hip_x (pitch), hip_y (roll), knee, ankle_y (pitch), ankle_x (roll)
+action:
+  range_fraction: 0.50
+obs_scale:
+  joint_pos: 1.0
+  joint_vel: 0.05
+  base_ang_vel: 0.25
+  proj_gravity: 1.0
+  prev_action: 1.0
+actuator:
+  torque_limit: 2.94
+  delay_sec: 0.020
+  delay_range: [0.0, 0.040]  # ROBUST: 0-40 ms (servo fit 0-20 ms, plus the robot's own loop)
+  servo_lag_tau: 0.010  # servo fit 6 Nov (was 20 ms)
+  backlash_deadband: 0.0087  # ROBUST: 0.5 deg (fit 0.2 deg unloaded; more under load)
+  enable_delay: true
+  enable_lag: true
+  enable_backlash: true
+domain_randomization:
+  enabled: true
+  friction_range: [0.25, 0.8]
+  mass_scale_range: [0.8, 1.2]
+  motor_strength_range: [0.85, 1.15]
+  push_interval: 125
+  push_magnitude: 3.0
+termination:
+  min_torso_height: 0.15
+  max_torso_height: 0.45
+  min_upright_cosine: 0.65
+goal_ranges:
+  vx: [0.0, 0.6]  # straight step: lets initial_vx start at 0.05 (the sampler clips to this)
+  vy: [-0.2, 0.2]
+  wz: [-0.5, 0.5]
+curriculum:
+  enabled: false
+  initial_vx: [0.03, 0.07]  # clean gait: a flat-foot 2 steps/s walk with a 20 mm lift stays under 4 rad/s up to about 0.06 m/s
+  initial_vy: [0.0, 0.0]  # clean gait: straight only
+  initial_wz: [0.0, 0.0]  # clean gait: straight only
+  success_threshold: 0.70
+  expansion_rate: 1.15
+  window_size: 30
+  p_zero_cmd: 0.15  # COMBO: 15% stepping in place (was 30%)
+shaping:
+  gait_shaping: true
+  phase_weight: 0.5  # straight step (was 0.1)
+  phase_margin: 0.05  # COMBO: double support allowed near each change of feet
+  gait_always: true  # clean gait: gait terms at every command (the shared reward drops them at |goal| <= 0.1 m/s)
+  straight: {weight: 1.0, yaw_std: 0.10, y_std: 0.05}  # clean gait: heading and sideways offset from the start, simulator truth, not relabelled
+  clock_height: {weight: 1.0, height_m: 0.026, std_m: 0.012}  # ROUND 3: weight 1.0 (was 0.6), target +4 mm (lift was 3-9 mm short)
+  foot_flat: {l1: 2.0, l2: 4.0, axes: both}  # COMBO: x2 (cleanflat2: whole sole 92-95%);  # FLAT FOOT: the sole's whole angle to the floor pays, so toe and heel stances pay as well as edge (was axes: roll)
+  foot_drag: {weight: 0.75, height_mm: 2}  # a low foot moving off the floor pays (his foot_drag -2)
+  action_filter: true
+  prev_action_obs: true
+  smooth_penalties: true
+  reset_velocity: true
+  action_filter_alpha: 0.20  # COMBO: as cleansmooth (lift 22-24 mm)
+  raw_action_rate: 0.05  # COMBO: as cleansmooth
+  upright: {weight: 0.5, pitch_deg: 4, roll_deg: 5}  # ROUND 3: roll 5 deg (was 8; the torso still rocked 15-21 deg per step)
+  hip_yaw_hold: {weight: 0.3, std_deg: 4}  # ROUND 3: hips twisted 5-14 deg per step
+  speed_margin: {weight: 0.5, frac: 0.8, noload_rad_s: 5.3}  # ROUND 3: keep joints under 80% of the servo's no-load speed
+ #  # COMBO: hold the torso level (pitch drifted -10 to +5 deg by seed)
+  progress_weight: 0.30
+  air_time_weight: 3.0
+  single_support_weight: 0.05
+  swing_clearance_weight: 0.0
+  flight_penalty_weight: -0.5
+  zero_touchdown_weight: -0.3
+  action_rate_weight: 0.0
+  action_second_diff_weight: 0.0
+  joint_accel_weight: 0.0
+  posture_weight: 0.0
+  base_motion_weight: 0.0
+  smoothness_ramp: 1.0
+  smoothness_ramp_fraction: 0.4
+  reset_velocity_probability: 0.5
+reward:
+  mode: track
+  sigma_v: 0.15
+  sigma_w: 0.15
+  track_rel: {v_rel: 0.4, v_min: 0.03, w_rel: 0.7, w_min: 0.10}  # COMBO: v_rel 0.4, v_min 0.03 (were 0.7, 0.07);  # straight step: w_min was 0.15;  # kernel width follows the command (fast/valid_env.py); sigma_v, sigma_w unused
+  alive_bonus: 2.5
+  fall_penalty: 25.0
+  stand_safe_pose_weight: 5.0
+  stand_safe_symmetry_weight: 1.0
+  stand_safe_torque_weight: 2.0
+  stand_safe_action_weight: 1.0
+  ema_beta: 0.85
+her:
+  capacity: 200000
+  relabel_strategy: future
+  relabel_dims: [vx]  # clean gait: vy and wz keep the stored 0, so a curve is never relabelled as the goal
+  relabel_k: 4
+  n_sampled_goal: 2
+sac:
+  hidden_dim: 256
+  actor_lr: 0.0003
+  critic_lr: 0.0003
+  alpha_lr: 0.0003
+  gamma: 0.99
+  tau: 0.005
+  batch_size: 256
+  updates_per_step: 1
+  warmup_steps: 100
+  learning_starts: 5000
+
+# v2 profile-derived settings: no pilot launched.
+profiling:
+  device: cuda
+  main_threads: 4
+  worker_threads: 1
+  gradient_steps: -1
+validity:
+  friction: true
+  motor_torque: true
+  push_s: 0.1
+  servo_curve: {stall_nm: 6.53, noload_rad_s: 5.31, cap_nm: 2.94}
+  history: 5
+  obs_noise: {joint_pos: 0.002, joint_vel: 0.0, gyro: 0.02, gravity: 0.02}
+  encoder_rad: 0.00153398
+  joint_vel_from_position: true
+  clock_hz: 1.0  # straight step: a 1 s cycle, 2 steps a second (was 0.9 s)
+  slow_yaw_s: 1.0  # straight step: the policy reads its mean sensed yaw rate over one cycle
+  duty_range: [0.8, 1.0]  # ROBUST: servo power and speed 80-100% per episode (load and battery sag, not measured)
+  com_offset_m: [0.012, 0.006]  # ROBUST: torso centre of mass up to 12 mm fore-aft, 6 mm sideways (wiring, battery, Pi)
+  obs_bias: {joint_pos: 0.0175, gyro: 0.02, gravity: 0.05}
+token_budget:
+  costs: [flight, slip, torque]
+  rate_min: [0.005, 0.02, 0.01]
+  rate_max: [0.2, 0.2, 0.2]
+  burst_steps: 100
+  window_steps: 100
+  p_unconstrained: 0.2
+  p_keep: 0.25
+  p_achieved: 0.5
+  alive_bonus: 0.2
+  curriculum: true

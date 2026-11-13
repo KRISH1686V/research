@@ -1,0 +1,45 @@
+
+walk_easy_noise0.0.json: 71 of 72 scripted walks stayed up 10 s
+  flight  per-step mean over walks: min 0  median 0.0209  max 0.0924   | 90th pct of 100-step window means: max 0.1
+  slip    per-step mean over walks: min 0.00456  median 0.014  max 0.0348   | 90th pct of 100-step window means: max 0.0395
+  jshake  per-step mean over walks: min 1.86e-05  median 3.38e-05  max 5.7e-05   | 90th pct of 100-step window means: max 5.85e-05
+   pattern speed 0.10 (walked 0.106 m/s, n=18): min flight 0, slip 0.00456, jshake 1.86e-05 | median flight 0.000111, slip 0.00583, jshake 2.68e-05
+   pattern speed 0.15 (walked 0.150 m/s, n=18): min flight 0.000444, slip 0.00868, jshake 2.2e-05 | median flight 0.00989, slip 0.00983, jshake 2.95e-05
+   pattern speed 0.20 (walked 0.190 m/s, n=18): min flight 0.0202, slip 0.0147, jshake 2.72e-05 | median flight 0.0334, slip 0.0164, jshake 3.37e-05
+   pattern speed 0.25 (walked 0.211 m/s, n=17): min flight 0.0569, slip 0.0242, jshake 3.37e-05 | median flight 0.0753, slip 0.0274, jshake 4.12e-05
+
+walk_easy_noise0.2.json: 0 of 72 scripted walks stayed up 10 s
+  (few stayed up: statistics over all runs, up to their fall)
+  flight  per-step mean over walks: min 0  median 0.0104  max 0.0748   | 90th pct of 100-step window means: max 0.09
+  slip    per-step mean over walks: min 0.00575  median 0.0126  max 0.0301   | 90th pct of 100-step window means: max 0.0346
+  jshake  per-step mean over walks: min 2.07e-05  median 3.86e-05  max 6.11e-05   | 90th pct of 100-step window means: max 6.4e-05
+   pattern speed 0.10 (walked 0.033 m/s, n=18): min flight 0, slip 0.00651, jshake 2.46e-05 | median flight 0.00482, slip 0.00937, jshake 3.62e-05
+   pattern speed 0.15 (walked 0.079 m/s, n=18): min flight 0.00141, slip 0.00676, jshake 2.4e-05 | median flight 0.00844, slip 0.0111, jshake 3.8e-05
+   pattern speed 0.20 (walked 0.125 m/s, n=18): min flight 0.00392, slip 0.00575, jshake 2.07e-05 | median flight 0.0179, slip 0.0153, jshake 4.13e-05
+   pattern speed 0.25 (walked 0.145 m/s, n=18): min flight 0, slip 0.00702, jshake 2.14e-05 | median flight 0.0254, slip 0.018, jshake 4.52e-05
+
+walk_full_noise0.0.json: 50 of 72 scripted walks stayed up 10 s
+  flight  per-step mean over walks: min 0.002  median 0.038  max 0.143   | 90th pct of 100-step window means: max 0.175
+  slip    per-step mean over walks: min 0.00538  median 0.016  max 0.0442   | 90th pct of 100-step window means: max 0.0498
+  jshake  per-step mean over walks: min 1.68e-05  median 3.29e-05  max 5.73e-05   | 90th pct of 100-step window means: max 5.86e-05
+   pattern speed 0.10 (walked 0.102 m/s, n=12): min flight 0.002, slip 0.00538, jshake 1.68e-05 | median flight 0.00567, slip 0.00705, jshake 2.6e-05
+   pattern speed 0.15 (walked 0.145 m/s, n=13): min flight 0.00956, slip 0.009, jshake 1.96e-05 | median flight 0.0282, slip 0.0133, jshake 2.79e-05
+   pattern speed 0.20 (walked 0.190 m/s, n=14): min flight 0.0278, slip 0.0149, jshake 2.42e-05 | median flight 0.0629, slip 0.0207, jshake 3.33e-05
+   pattern speed 0.25 (walked 0.214 m/s, n=11): min flight 0.07, slip 0.0258, jshake 3.51e-05 | median flight 0.1, slip 0.0335, jshake 4.25e-05
+
+walk_full_noise0.1.json: 16 of 72 scripted walks stayed up 10 s
+  flight  per-step mean over walks: min 0.00556  median 0.0534  max 0.107   | 90th pct of 100-step window means: max 0.154
+  slip    per-step mean over walks: min 0.00875  median 0.0204  max 0.037   | 90th pct of 100-step window means: max 0.0432
+  jshake  per-step mean over walks: min 2.48e-05  median 3.44e-05  max 5.91e-05   | 90th pct of 100-step window means: max 6.09e-05
+   pattern speed 0.10 (walked 0.114 m/s, n=1): min flight 0.00556, slip 0.00875, jshake 4.76e-05 | median flight 0.00556, slip 0.00875, jshake 4.76e-05
+   pattern speed 0.15 (walked 0.134 m/s, n=5): min flight 0.018, slip 0.0107, jshake 2.48e-05 | median flight 0.0311, slip 0.0137, jshake 2.81e-05
+   pattern speed 0.20 (walked 0.181 m/s, n=6): min flight 0.0484, slip 0.0186, jshake 2.92e-05 | median flight 0.0602, slip 0.0208, jshake 3.13e-05
+   pattern speed 0.25 (walked 0.204 m/s, n=4): min flight 0.0856, slip 0.0332, jshake 3.84e-05 | median flight 0.103, slip 0.0342, jshake 4.43e-05
+
+standing and uniform random actions (3000 steps each):
+  easy/stand         flight 0, slip 8.84e-05, jshake 1.51e-08   falls 0
+  easy/uniform_0.5   flight 0.0062, slip 0.0115, jshake 3.76e-05   falls 32
+  easy/uniform_1.0   flight 0.0205, slip 0.0151, jshake 8.67e-05   falls 61
+  full/stand         flight 0, slip 0.000114, jshake 3.81e-08   falls 0
+  full/uniform_0.5   flight 0.0369, slip 0.0153, jshake 3.48e-05   falls 32
+  full/uniform_1.0   flight 0.0629, slip 0.0199, jshake 8.26e-05   falls 65

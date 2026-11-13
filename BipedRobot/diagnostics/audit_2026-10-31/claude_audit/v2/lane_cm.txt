@@ -1,0 +1,2 @@
+deploylong7mrobustpush config/v2_deploy_budget_alpha30_robustpush_fit.yaml 11
+deploylong7mrobustpush config/v2_deploy_budget_alpha30_robustpush_fit.yaml 12

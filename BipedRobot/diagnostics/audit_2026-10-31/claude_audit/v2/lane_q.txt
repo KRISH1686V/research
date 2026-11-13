@@ -1,0 +1,4 @@
+deploylong7mhumanrelflat config/v2_deploy_budget_alpha30_human_rel_flat.yaml 3
+deploylong7mhumanclockflat config/v2_deploy_budget_alpha30_human_clock_flat.yaml 3
+deploylong7mhumanrelflat config/v2_deploy_budget_alpha30_human_rel_flat.yaml 4
+deploylong7mhumanclockflat config/v2_deploy_budget_alpha30_human_clock_flat.yaml 4

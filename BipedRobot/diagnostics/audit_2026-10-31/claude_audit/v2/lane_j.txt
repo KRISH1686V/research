@@ -1,0 +1,2 @@
+deploycmdlong7mplain config/v2_deploy_plain_alpha30.yaml 3
+deploycmdlong7mplain config/v2_deploy_plain_alpha30.yaml 4

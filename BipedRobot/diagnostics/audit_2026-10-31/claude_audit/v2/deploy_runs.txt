@@ -1,0 +1,4 @@
+deploywin config/v2_deploy_budget.yaml 3
+deploywingait config/v2_deploy_budget_gait.yaml 3
+deploycmd config/v2_deploy_cmd.yaml 3
+deploycmdgait config/v2_deploy_cmd_gait.yaml 3

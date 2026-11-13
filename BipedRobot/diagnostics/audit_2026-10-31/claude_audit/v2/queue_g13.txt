@@ -1,0 +1,20 @@
+deploylong7mr17wSF45 config/v2_deploy_budget_alpha30_r17wSF45_fit.yaml 11
+deploylong7mr17wSF45 config/v2_deploy_budget_alpha30_r17wSF45_fit.yaml 12
+# gpu-13 queue (12 Nov 2026, owner: use gpu-13 now). Runs on gpu-13 with its own run_queue.sh, width 3 (a 12.3 GB model server of another user shares the card). Results are pulled to the workstation by pull_g13.sh.
+deploylong7mr17wS config/v2_deploy_budget_alpha30_r17wS_fit.yaml 11
+deploylong7mr17wS config/v2_deploy_budget_alpha30_r17wS_fit.yaml 12
+deploylong7mc17lagtight config/v2_deploy_budget_alpha30_c17lagtight_fit.yaml 11
+deploylong7mc17lagmin config/v2_deploy_budget_alpha30_c17lagmin_fit.yaml 11
+deploylong7mc17lagtight config/v2_deploy_budget_alpha30_c17lagtight_fit.yaml 12
+deploylong7mc17lagmin config/v2_deploy_budget_alpha30_c17lagmin_fit.yaml 12
+deploylong7mc17lagtight config/v2_deploy_budget_alpha30_c17lagtight_fit.yaml 13
+deploylong7mc17lagmin config/v2_deploy_budget_alpha30_c17lagmin_fit.yaml 13
+deploylong7mc17lagtight config/v2_deploy_budget_alpha30_c17lagtight_fit.yaml 14
+deploylong7mc17lagmin config/v2_deploy_budget_alpha30_c17lagmin_fit.yaml 14
+deploylong7mc17lagtight config/v2_deploy_budget_alpha30_c17lagtight_fit.yaml 15
+deploylong7mc17lagmin config/v2_deploy_budget_alpha30_c17lagmin_fit.yaml 15
+deploylong7mc17pen10 config/v2_deploy_budget_alpha30_c17pen10_fit.yaml 11
+deploylong7mc17pen10 config/v2_deploy_budget_alpha30_c17pen10_fit.yaml 12
+deploylong7mc17pen10 config/v2_deploy_budget_alpha30_c17pen10_fit.yaml 13
+deploylong7mc17pen10 config/v2_deploy_budget_alpha30_c17pen10_fit.yaml 14
+deploylong7mc17pen10 config/v2_deploy_budget_alpha30_c17pen10_fit.yaml 15

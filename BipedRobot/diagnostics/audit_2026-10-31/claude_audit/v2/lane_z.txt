@@ -1,0 +1,2 @@
+deploylong7mstraightflatfit config/v2_deploy_budget_alpha30_straightflat_fit.yaml 3
+deploylong7mstraightflatfit config/v2_deploy_budget_alpha30_straightflat_fit.yaml 4

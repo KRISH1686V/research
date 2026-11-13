@@ -1,0 +1,340 @@
+{
+ "factors": [
+  [
+   "H",
+   "history 5 frames"
+  ],
+  [
+   "R",
+   "difficulty ramp over 40%"
+  ],
+  [
+   "L",
+   "critic layer norm"
+  ],
+  [
+   "Q",
+   "averaged twin Q"
+  ],
+  [
+   "E",
+   "averaged policy weights"
+  ],
+  [
+   "A",
+   "asymmetric critic"
+  ],
+  [
+   "M",
+   "mirror augmentation"
+  ],
+  [
+   "N",
+   "3-step returns"
+  ],
+  [
+   "T",
+   "sigma_v 0.075"
+  ],
+  [
+   "W",
+   "torque penalty 0.2"
+  ],
+  [
+   "G",
+   "gait shaping off"
+  ],
+  [
+   "F",
+   "smoothing: action rate 0.3, filter 0.3"
+  ]
+ ],
+ "design": [
+  {
+   "run": "doe01",
+   "on": [],
+   "flags": []
+  },
+  {
+   "run": "doe02",
+   "on": [
+    "A",
+    "E",
+    "G",
+    "M",
+    "N",
+    "Q",
+    "W"
+   ],
+   "flags": [
+    "--avg_q",
+    "--ema_tau",
+    "0.002",
+    "--asym",
+    "--mirror",
+    "--n_step",
+    "3"
+   ]
+  },
+  {
+   "run": "doe03",
+   "on": [
+    "A",
+    "E",
+    "F",
+    "L",
+    "M",
+    "T",
+    "W"
+   ],
+   "flags": [
+    "--layer_norm",
+    "--ema_tau",
+    "0.002",
+    "--asym",
+    "--mirror"
+   ]
+  },
+  {
+   "run": "doe04",
+   "on": [
+    "F",
+    "G",
+    "L",
+    "N",
+    "Q",
+    "T"
+   ],
+   "flags": [
+    "--layer_norm",
+    "--avg_q",
+    "--n_step",
+    "3"
+   ]
+  },
+  {
+   "run": "doe05",
+   "on": [
+    "A",
+    "E",
+    "F",
+    "G",
+    "N",
+    "R",
+    "T"
+   ],
+   "flags": [
+    "--difficulty_ramp",
+    "0.4",
+    "--ema_tau",
+    "0.002",
+    "--asym",
+    "--n_step",
+    "3"
+   ]
+  },
+  {
+   "run": "doe06",
+   "on": [
+    "F",
+    "M",
+    "Q",
+    "R",
+    "T",
+    "W"
+   ],
+   "flags": [
+    "--difficulty_ramp",
+    "0.4",
+    "--avg_q",
+    "--mirror"
+   ]
+  },
+  {
+   "run": "doe07",
+   "on": [
+    "G",
+    "L",
+    "M",
+    "N",
+    "R",
+    "W"
+   ],
+   "flags": [
+    "--difficulty_ramp",
+    "0.4",
+    "--layer_norm",
+    "--mirror",
+    "--n_step",
+    "3"
+   ]
+  },
+  {
+   "run": "doe08",
+   "on": [
+    "A",
+    "E",
+    "L",
+    "Q",
+    "R"
+   ],
+   "flags": [
+    "--difficulty_ramp",
+    "0.4",
+    "--layer_norm",
+    "--avg_q",
+    "--ema_tau",
+    "0.002",
+    "--asym"
+   ]
+  },
+  {
+   "run": "doe09",
+   "on": [
+    "E",
+    "H",
+    "M",
+    "N",
+    "T"
+   ],
+   "flags": [
+    "--ema_tau",
+    "0.002",
+    "--mirror",
+    "--n_step",
+    "3"
+   ]
+  },
+  {
+   "run": "doe10",
+   "on": [
+    "A",
+    "G",
+    "H",
+    "Q",
+    "T",
+    "W"
+   ],
+   "flags": [
+    "--avg_q",
+    "--asym"
+   ]
+  },
+  {
+   "run": "doe11",
+   "on": [
+    "A",
+    "F",
+    "H",
+    "L",
+    "N",
+    "W"
+   ],
+   "flags": [
+    "--layer_norm",
+    "--asym",
+    "--n_step",
+    "3"
+   ]
+  },
+  {
+   "run": "doe12",
+   "on": [
+    "E",
+    "F",
+    "G",
+    "H",
+    "L",
+    "M",
+    "Q"
+   ],
+   "flags": [
+    "--layer_norm",
+    "--avg_q",
+    "--ema_tau",
+    "0.002",
+    "--mirror"
+   ]
+  },
+  {
+   "run": "doe13",
+   "on": [
+    "A",
+    "F",
+    "G",
+    "H",
+    "M",
+    "R"
+   ],
+   "flags": [
+    "--difficulty_ramp",
+    "0.4",
+    "--asym",
+    "--mirror"
+   ]
+  },
+  {
+   "run": "doe14",
+   "on": [
+    "E",
+    "F",
+    "H",
+    "N",
+    "Q",
+    "R",
+    "W"
+   ],
+   "flags": [
+    "--difficulty_ramp",
+    "0.4",
+    "--avg_q",
+    "--ema_tau",
+    "0.002",
+    "--n_step",
+    "3"
+   ]
+  },
+  {
+   "run": "doe15",
+   "on": [
+    "E",
+    "G",
+    "H",
+    "L",
+    "R",
+    "T",
+    "W"
+   ],
+   "flags": [
+    "--difficulty_ramp",
+    "0.4",
+    "--layer_norm",
+    "--ema_tau",
+    "0.002"
+   ]
+  },
+  {
+   "run": "doe16",
+   "on": [
+    "A",
+    "H",
+    "L",
+    "M",
+    "N",
+    "Q",
+    "R",
+    "T"
+   ],
+   "flags": [
+    "--difficulty_ramp",
+    "0.4",
+    "--layer_norm",
+    "--avg_q",
+    "--asym",
+    "--mirror",
+    "--n_step",
+    "3"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+deployclockgait config/v2_deploy_budget_gait_clock.yaml 3
+deployclockgait config/v2_deploy_budget_gait_clock.yaml 4
+deployh10 config/v2_deploy_budget_h10.yaml 3
+deployh10 config/v2_deploy_budget_h10.yaml 4
+deploycmdclockgait config/v2_deploy_cmd_gait_clock.yaml 3
+deploycmdclockgait config/v2_deploy_cmd_gait_clock.yaml 4
+deployclock config/v2_deploy_budget_clock.yaml 3
+deployclock config/v2_deploy_budget_clock.yaml 4
+deploywin config/v2_deploy_budget.yaml 6
+deploywin config/v2_deploy_budget.yaml 7
+deploycmd config/v2_deploy_cmd.yaml 6
+deploycmd config/v2_deploy_cmd.yaml 7

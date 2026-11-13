@@ -1,0 +1,12 @@
+deploycmdalpha config/v2_deploy_cmd_alpha30.yaml 3
+deploycmdalpha config/v2_deploy_cmd_alpha30.yaml 4
+deployfixalpha config/v2_deploy_budget_alpha30.yaml 5
+deployfixalpha config/v2_deploy_budget_alpha30.yaml 6
+deploycmdalpha config/v2_deploy_cmd_alpha30.yaml 5
+deploycmdalpha config/v2_deploy_cmd_alpha30.yaml 6
+deployfixalpha config/v2_deploy_budget_alpha30.yaml 7
+deploycmdalpha config/v2_deploy_cmd_alpha30.yaml 7
+deploygaitalpha config/v2_deploy_budget_gait_alpha30.yaml 3
+deploygaitalpha config/v2_deploy_budget_gait_alpha30.yaml 4
+deploywin config/v2_deploy_budget.yaml 6
+deploywin config/v2_deploy_budget.yaml 7

@@ -1,0 +1,16 @@
+deploywingait config/v2_deploy_budget_gait.yaml 4
+deploywingait config/v2_deploy_budget_gait.yaml 5
+deploycmdgait config/v2_deploy_cmd_gait.yaml 4
+deploycmdgait config/v2_deploy_cmd_gait.yaml 5
+deploywin config/v2_deploy_budget.yaml 4
+deploywin config/v2_deploy_budget.yaml 5
+deploycmd config/v2_deploy_cmd.yaml 4
+deploycmd config/v2_deploy_cmd.yaml 5
+deploywingait config/v2_deploy_budget_gait.yaml 6
+deploywingait config/v2_deploy_budget_gait.yaml 7
+deploycmdgait config/v2_deploy_cmd_gait.yaml 6
+deploycmdgait config/v2_deploy_cmd_gait.yaml 7
+deploywin config/v2_deploy_budget.yaml 6
+deploywin config/v2_deploy_budget.yaml 7
+deploycmd config/v2_deploy_cmd.yaml 6
+deploycmd config/v2_deploy_cmd.yaml 7

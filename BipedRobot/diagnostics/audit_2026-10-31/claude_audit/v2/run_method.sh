@@ -7,8 +7,10 @@ A=$1; C=$2; S=$3
 R=/home/rpuser1/yasho/rl; PY=/home/rpuser1/miniconda3/envs/rl/bin/python; V=BipedRobot/diagnostics/audit_2026-10-31/claude_audit/v2
 N=fast_${A}_20261102_seed$S; L=${A}_s$S
 TOTAL=3000000; [[ $A == *long5m* ]] && TOTAL=4800000; [[ $A == *long7m* ]] && TOTAL=7200000
+# c17 comparisons (11 Nov 2026): the same randomization and smoothness schedule as SAC (difficulty ramp ends at 1.92M, as run_budget_deploy.sh long7m)
+EXTRA=""; [[ $A == *c17* ]] && EXTRA="--difficulty_ramp 0.26666666666666666 --match_sac_schedule"
 cd $R/BipedRobot
-nice -n 5 $PY fast/train_ppo.py --config $C --exp_name $N --seed $S --n_envs 8 --total_steps $TOTAL --log_dir runs --checkpoint_dir checkpoints > runs/$N.log 2>&1 || { echo "FAIL train $N"; exit 1; }
+nice -n 5 $PY fast/train_ppo.py --config $C --exp_name $N --seed $S --n_envs 8 --total_steps $TOTAL --log_dir runs --checkpoint_dir checkpoints $EXTRA > runs/$N.log 2>&1 || { echo "FAIL train $N"; exit 1; }
 cd $R
 D=BipedRobot/checkpoints/$N/seed_$S; RC=BipedRobot/runs/$N/seed_$S/resolved_config.yaml
 mkdir -p $V/deploy

@@ -1,0 +1,520 @@
+action:
+  range_fraction: 0.9
+actuator:
+  backlash_deadband: 0.0035
+  delay_range:
+  - 0.0
+  - 0.04
+  delay_sec: 0.02
+  enable_backlash: true
+  enable_delay: true
+  enable_lag: true
+  servo_lag_tau: 0.01
+  torque_limit: 2.94
+cli:
+  actor_hide: achieved,levels
+  algo: sac
+  asym: true
+  avg_q: true
+  batch_size: null
+  caps_s: 0.0
+  caps_sigma: 0.01
+  caps_t: 0.0
+  checkpoint_dir: checkpoints
+  config: config/v2_deploy_budget_alpha30_r17wSC_fit.yaml
+  device: cuda
+  difficulty_ramp: 0.26666666666666666
+  ema_tau: 0.002
+  exp_name: fast_deploylong7mr17wSC_20261102_seed12
+  init_alpha: 1.0
+  init_log_std: null
+  layer_norm: true
+  log_dir: runs
+  log_every: 20000
+  max_wall_s: null
+  mirror: true
+  mode: graph
+  n_envs: 8
+  n_sampled_goal: 2
+  n_step: 1
+  plain_ckpt: true
+  realism: full
+  relabel_strategy: future
+  reward_mode: track
+  save_critic: true
+  save_every: 400000
+  seed: 12
+  stand_only: false
+  threads: 2
+  total_steps: 7200000
+  updates_per_env_step: 1.0
+curriculum:
+  enabled: false
+  expansion_rate: 1.15
+  initial_vx:
+  - 0.08
+  - 0.12
+  initial_vy:
+  - 0.0
+  - 0.0
+  initial_wz:
+  - 0.0
+  - 0.0
+  p_zero_cmd: 0.15
+  success_threshold: 0.7
+  window_size: 30
+domain_randomization:
+  enabled: true
+  friction_range:
+  - 0.25
+  - 0.8
+  mass_scale_range:
+  - 0.8
+  - 1.2
+  motor_strength_range:
+  - 0.85
+  - 1.15
+  push_interval: 125
+  push_magnitude: 3.0
+env:
+  achieved_goal_window_sec: 1.0
+  frame_skip: 4
+  max_episode_steps: 500
+  push_enabled: false
+  realism: easy
+  require_xml: /home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml
+  xml_path: /home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml
+goal_ranges:
+  vx:
+  - 0.0
+  - 0.6
+  vy:
+  - -0.2
+  - 0.2
+  wz:
+  - -0.5
+  - 0.5
+her:
+  capacity: 200000
+  n_sampled_goal: 2
+  relabel_dims:
+  - vx
+  relabel_k: 4
+  relabel_strategy: future
+obs_scale:
+  base_ang_vel: 0.25
+  joint_pos: 1.0
+  joint_vel: 0.05
+  prev_action: 1.0
+  proj_gravity: 1.0
+profiling:
+  device: cuda
+  gradient_steps: -1
+  main_threads: 4
+  worker_threads: 1
+resolved_env_config:
+  achieved_goal_window_sec: 1.0
+  action:
+    range_fraction: 0.9
+  actuator:
+    backlash_deadband: 0.0035
+    delay_range:
+    - 0.0
+    - 0.04
+    delay_sec: 0.02
+    enable_backlash: true
+    enable_delay: true
+    enable_lag: true
+    servo_lag_tau: 0.01
+    torque_limit: 2.94
+  curriculum:
+    enabled: false
+    expansion_rate: 1.15
+    initial_vx:
+    - 0.08
+    - 0.12
+    initial_vy:
+    - 0.0
+    - 0.0
+    initial_wz:
+    - 0.0
+    - 0.0
+    p_zero_cmd: 0.15
+    success_threshold: 0.7
+    window_size: 30
+  domain_randomization:
+    enabled: true
+    friction_range:
+    - 0.25
+    - 0.8
+    mass_scale_range:
+    - 0.8
+    - 1.2
+    motor_strength_range:
+    - 0.85
+    - 1.15
+    push_interval: 125
+    push_magnitude: 3.0
+  frame_skip: 4
+  goal_ranges:
+    vx:
+    - 0.0
+    - 0.6
+    vy:
+    - -0.2
+    - 0.2
+    wz:
+    - -0.5
+    - 0.5
+  max_episode_steps: 500
+  obs_scale:
+    base_ang_vel: 0.25
+    joint_pos: 1.0
+    joint_vel: 0.05
+    prev_action: 1.0
+    proj_gravity: 1.0
+  push_enabled: true
+  realism: full
+  require_xml: /home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml
+  reward:
+    alive_bonus: 2.5
+    ema_beta: 0.85
+    fall_penalty: 25.0
+    mode: track
+    sigma_v: 0.15
+    sigma_w: 0.15
+    stand_safe_action_weight: 1.0
+    stand_safe_pose_weight: 5.0
+    stand_safe_symmetry_weight: 1.0
+    stand_safe_torque_weight: 2.0
+    track_rel:
+      v_min: 0.03
+      v_rel: 0.4
+      w_min: 0.1
+      w_rel: 0.7
+  robot:
+    default_qpos:
+    - 0.0
+    - -0.174533
+    - 0.0
+    - -0.453786
+    - -0.279253
+    - 0.0
+    - 0.0
+    - -0.174533
+    - 0.0
+    - -0.453786
+    - -0.279253
+    - 0.0
+  shaping:
+    action_filter: true
+    action_filter_alpha: 0.2
+    action_rate_weight: 0.0
+    action_second_diff_weight: 0.0
+    air_time_weight: 3.0
+    base_motion_weight: 0.0
+    comfort_gate:
+      frac: 0.5
+      height_m: 0.02
+      min_bump_m: 0.003
+    flight_penalty_weight: -0.5
+    foot_drag:
+      height_mm: 2
+      weight: 0.75
+    foot_flat:
+      axes: both
+      l1: 2.0
+      l2: 4.0
+    gait_always: true
+    gait_shaping: true
+    hip_yaw_hold:
+      std_deg: 4
+      weight: 0.3
+    joint_accel_weight: 0.0
+    min_clearance:
+      height_m: 0.008
+      penalty: 0.5
+    phase_margin: 0.05
+    phase_weight: 0.5
+    posture_weight: 0.0
+    prev_action_obs: true
+    progress_weight: 0.3
+    raw_action_rate: 0.05
+    ref_imitate:
+      rsi_prob: 0.3
+      std_rad: 0.2
+      table: config/gait_ref_r8.npz
+      weight: 1.5
+    reset_velocity: true
+    reset_velocity_probability: 0.5
+    single_support_weight: 0.05
+    smooth_penalties: true
+    smoothness_ramp: 1.0
+    smoothness_ramp_fraction: 0.4
+    speed_margin:
+      frac: 0.8
+      noload_rad_s: 5.3
+      weight: 0.5
+    stance_width:
+      band_m:
+      - 0.085
+      - 0.115
+      penalty: 1.0
+      penalty_span_m: 0.02
+      std_m: 0.02
+      weight: 0.5
+    straight:
+      weight: 1.0
+      y_std: 0.05
+      yaw_std: 0.1
+    swing_clearance_weight: 0.0
+    tilt_limit:
+      deg: 8
+      penalty: 1.0
+      span_deg: 8
+    upright:
+      pitch_deg: 4
+      roll_deg: 10
+      weight: 1.0
+    zero_touchdown_weight: -0.3
+  termination:
+    max_torso_height: 0.45
+    min_torso_height: 0.15
+    min_upright_cosine: 0.82
+  token_budget:
+    alive_bonus: 0.2
+    burst_steps: 100
+    costs:
+    - flight
+    - slip
+    - jshake
+    curriculum: true
+    overdraft: soft
+    p_achieved: 0.5
+    p_corner: 0.3
+    p_keep: 0.25
+    p_unconstrained: 0.2
+    rate_max:
+    - 0.05
+    - 0.1
+    - 0.00015
+    rate_min:
+    - 0.001
+    - 0.004
+    - 2.5e-05
+    settle_steps: 5
+    u_low: -0.3
+    window_steps: 100
+  validity:
+    clock_hz: 1.0
+    encoder_rad: 0.00153398
+    friction: true
+    history: 5
+    joint_vel_from_position: true
+    motor_torque: true
+    obs_bias:
+      gravity: 0.05
+      gyro: 0.02
+      joint_pos: 0.0175
+    obs_noise:
+      gravity: 0.02
+      gyro: 0.02
+      joint_pos: 0.002
+      joint_vel: 0.0
+    obs_vibration:
+      amp:
+      - 0.3
+      - 1.0
+      gyro: 1.2
+      hz:
+      - 3.0
+      - 20.0
+      joint_vel: 0.8
+    push_s: 0.1
+    servo_curve:
+      cap_nm: 2.94
+      noload_rad_s: 5.31
+      stall_nm: 6.53
+    slow_yaw_s: 1.0
+  xml_path: /home/rpuser1/yasho/rl/BipedRobot/envs/assets/robotV2/robot_v2_train.xml
+reward:
+  alive_bonus: 2.5
+  ema_beta: 0.85
+  fall_penalty: 25.0
+  mode: track
+  sigma_v: 0.15
+  sigma_w: 0.15
+  stand_safe_action_weight: 1.0
+  stand_safe_pose_weight: 5.0
+  stand_safe_symmetry_weight: 1.0
+  stand_safe_torque_weight: 2.0
+  track_rel:
+    v_min: 0.03
+    v_rel: 0.4
+    w_min: 0.1
+    w_rel: 0.7
+robot:
+  default_qpos:
+  - 0.0
+  - -0.174533
+  - 0.0
+  - -0.453786
+  - -0.279253
+  - 0.0
+  - 0.0
+  - -0.174533
+  - 0.0
+  - -0.453786
+  - -0.279253
+  - 0.0
+sac:
+  actor_lr: 0.0003
+  alpha_lr: 0.0003
+  batch_size: 256
+  critic_lr: 0.0003
+  gamma: 0.99
+  hidden_dim: 256
+  learning_starts: 5000
+  tau: 0.005
+  updates_per_step: 1
+  warmup_steps: 100
+shaping:
+  action_filter: true
+  action_filter_alpha: 0.2
+  action_rate_weight: 0.0
+  action_second_diff_weight: 0.0
+  air_time_weight: 3.0
+  base_motion_weight: 0.0
+  comfort_gate:
+    frac: 0.5
+    height_m: 0.02
+    min_bump_m: 0.003
+  flight_penalty_weight: -0.5
+  foot_drag:
+    height_mm: 2
+    weight: 0.75
+  foot_flat:
+    axes: both
+    l1: 2.0
+    l2: 4.0
+  gait_always: true
+  gait_shaping: true
+  hip_yaw_hold:
+    std_deg: 4
+    weight: 0.3
+  joint_accel_weight: 0.0
+  min_clearance:
+    height_m: 0.008
+    penalty: 0.5
+  phase_margin: 0.05
+  phase_weight: 0.5
+  posture_weight: 0.0
+  prev_action_obs: true
+  progress_weight: 0.3
+  raw_action_rate: 0.05
+  ref_imitate:
+    rsi_prob: 0.3
+    std_rad: 0.2
+    table: config/gait_ref_r8.npz
+    weight: 1.5
+  reset_velocity: true
+  reset_velocity_probability: 0.5
+  single_support_weight: 0.05
+  smooth_penalties: true
+  smoothness_ramp: 1.0
+  smoothness_ramp_fraction: 0.4
+  speed_margin:
+    frac: 0.8
+    noload_rad_s: 5.3
+    weight: 0.5
+  stance_width:
+    band_m:
+    - 0.085
+    - 0.115
+    penalty: 1.0
+    penalty_span_m: 0.02
+    std_m: 0.02
+    weight: 0.5
+  straight:
+    weight: 1.0
+    y_std: 0.05
+    yaw_std: 0.1
+  swing_clearance_weight: 0.0
+  tilt_limit:
+    deg: 8
+    penalty: 1.0
+    span_deg: 8
+  upright:
+    pitch_deg: 4
+    roll_deg: 10
+    weight: 1.0
+  zero_touchdown_weight: -0.3
+termination:
+  max_torso_height: 0.45
+  min_torso_height: 0.15
+  min_upright_cosine: 0.82
+token_budget:
+  alive_bonus: 0.2
+  burst_steps: 100
+  costs:
+  - flight
+  - slip
+  - jshake
+  curriculum: true
+  overdraft: soft
+  p_achieved: 0.5
+  p_corner: 0.3
+  p_keep: 0.25
+  p_unconstrained: 0.2
+  rate_max:
+  - 0.05
+  - 0.1
+  - 0.00015
+  rate_min:
+  - 0.001
+  - 0.004
+  - 2.5e-05
+  settle_steps: 5
+  u_low: -0.3
+  window_steps: 100
+training:
+  algo: sac
+  n_envs: 8
+  n_sampled_goal: 2
+  realism: full
+  relabel_strategy: future
+  reward_mode: track
+  seed: 12
+  stand_only: false
+  total_steps: 7200000
+validity:
+  clock_hz: 1.0
+  encoder_rad: 0.00153398
+  friction: true
+  history: 5
+  joint_vel_from_position: true
+  motor_torque: true
+  obs_bias:
+    gravity: 0.05
+    gyro: 0.02
+    joint_pos: 0.0175
+  obs_noise:
+    gravity: 0.02
+    gyro: 0.02
+    joint_pos: 0.002
+    joint_vel: 0.0
+  obs_vibration:
+    amp:
+    - 0.3
+    - 1.0
+    gyro: 1.2
+    hz:
+    - 3.0
+    - 20.0
+    joint_vel: 0.8
+  push_s: 0.1
+  servo_curve:
+    cap_nm: 2.94
+    noload_rad_s: 5.31
+    stall_nm: 6.53
+  slow_yaw_s: 1.0

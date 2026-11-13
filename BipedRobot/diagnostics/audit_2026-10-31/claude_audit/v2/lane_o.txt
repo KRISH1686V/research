@@ -1,0 +1,2 @@
+deploylong7mhuman config/v2_deploy_budget_alpha30_human.yaml 7
+deploylong7mhuman config/v2_deploy_budget_alpha30_human.yaml 5

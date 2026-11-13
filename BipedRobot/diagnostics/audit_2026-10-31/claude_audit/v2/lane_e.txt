@@ -1,0 +1,12 @@
+deploycmdlong5mpen2 config/v2_deploy_penalty_2.yaml 3
+deploycmdlong5mpen5 config/v2_deploy_penalty_5.yaml 3
+deploycmdlong5mpen10 config/v2_deploy_penalty_10.yaml 3
+deploycmdlong5mpen20 config/v2_deploy_penalty_20.yaml 3
+deploycmdlong5mlagtight config/v2_deploy_lagrange_alpha30_tight.yaml 3
+deploycmdlong5mlagmid config/v2_deploy_lagrange_alpha30_mid.yaml 3
+deploycmdlong5mlagloose config/v2_deploy_lagrange_alpha30_loose.yaml 3
+deploylong5mepisode config/v2_deploy_episode_alpha30.yaml 3
+deploycmdlong5mplain config/v2_deploy_plain_alpha30.yaml 3
+ppolong5mcmd config/v2_deploy_cmd_alpha30.yaml 3
+deploylong5mepisode config/v2_deploy_episode_alpha30.yaml 4
+deploycmdlong5mplain config/v2_deploy_plain_alpha30.yaml 4

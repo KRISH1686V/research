@@ -21,7 +21,9 @@ class BudgetHerReplay(GpuHerReplay):
     N_SCALARS = 10  # reward, done, r_smooth, r_gait_move, r_gait_still, r_flight, fell, cost x 3
 
     def __init__(self, capacity: int, n_envs: int, batch_size: int, n_sampled_goal: int, obs_dim: int, act_dim: int, reward_cfg: RewardConfig,
-                 device: torch.device, budget: dict, max_episode_steps: int = 500, priv_dim: int = 0, mirror: dict | None = None):
+                 device: torch.device, budget: dict, max_episode_steps: int = 500, priv_dim: int = 0, mirror: dict | None = None, relabel_keep: tuple = ()):
+        # relabel_keep (her.relabel_dims, 6 Nov 2026): velocity-goal dims [vx, vy, wz] that keep the stored command instead of the future achieved one
+        self.keep_cmd = torch.tensor([i in relabel_keep for i in range(3)], device=device) if relabel_keep else None
         self.n_cost = len(budget.get("costs", ("flight", "slip", "torque")))
         self.N_SCALARS = 7 + self.n_cost  # before the base class sizes rows from it
         super().__init__(capacity, n_envs, batch_size, n_sampled_goal, obs_dim, act_dim, reward_cfg, device, achieved_slice=(0, 3), desired_slice=(3, 6 + self.n_cost), priv_dim=priv_dim, mirror=mirror)
@@ -31,7 +33,10 @@ class BudgetHerReplay(GpuHerReplay):
         self.p_keep = float(budget["p_keep"])
         self.p_achieved = float(budget["p_achieved"])
         self.alive_bonus = float(budget.get("alive_bonus", 0.0))
-        self.u_floor = torch.zeros((), dtype=torch.float64, device=device)
+        self.p_corner = float(budget.get("p_corner", 0.0))  # as budget_env.py: prior draws that tighten one cost only
+        self.cap_floor = torch.as_tensor(np.asarray(budget.get("capacity_floor", [0.0] * self.n_cost), dtype=np.float64), device=device)  # as budget_env.py
+        self.soft_overdraft = budget.get("overdraft", "hard") == "soft"  # as budget_env.py: scale, do not zero, the task reward while overdrawn
+        self.u_floor = torch.full((), float(budget.get("u_low", 0.0)), dtype=torch.float64, device=device)  # prior draws from [u_floor, 1]; u_low as budget_env.py
         self.L = int(max_episode_steps)
         self.i_cost = self.i_rew + 7
         self.i_level = obs_dim - self.n_cost
@@ -49,6 +54,9 @@ class BudgetHerReplay(GpuHerReplay):
             self.lam = torch.full((self.n_cost,), float(self.lagrange.get("init", 0.0)), dtype=torch.float32, device=device)
             self._lam_np = np.full(self.n_cost, float(self.lagrange.get("init", 0.0)))
             self._limit = np.asarray(self.lagrange["limit"], dtype=np.float64)
+            # lagrange.normalize (11 Nov 2026, default off): each cost is paid per unit of its own limit, lambda * cost / limit, so costs of very different
+            # sizes (flight about 1e-3 a step, joint shake about 3e-5) get multipliers of the same order. With lr 0 it is a fixed penalty of init per limit.
+            self.lag_scale = torch.as_tensor(1.0 / self._limit if self.lagrange.get("normalize") else np.ones(self.n_cost), dtype=torch.float32, device=device)
 
     def dual_step(self, mean_cost: np.ndarray) -> np.ndarray:
         """Dual ascent on the cost limits, scaled by each limit so that one step size fits all three costs."""
@@ -107,16 +115,24 @@ class BudgetHerReplay(GpuHerReplay):
         fut = cur + (torch.rand(V, device=d) * (length - cur).float()).long()
         fut_idx = ((fut + start) % self.rows) * E + env
         goal_v = self.store[fut_idx][:, self.i_next + self.a0:self.i_next + self.a1]
+        if self.keep_cmd is not None:
+            goal_v = torch.where(self.keep_cmd, b[:V, self.d0:self.d0 + 3], goal_v)
 
         old_u = b[:V, self.d0 + 3:self.d1].to(torch.float64)
         spent = (self.cum[fut_idx] + self.store[fut_idx][:, self.i_cost:self.i_cost + self.n_cost].to(torch.float64)) / (fut + 1).to(torch.float64)[:, None]
         achieved_u = self.encode(spent)
         prior_u = self.u_floor + (1.0 - self.u_floor) * torch.rand((V, self.n_cost), device=d, dtype=torch.float64)
+        if self.p_corner:
+            hi = torch.maximum(self.u_floor, torch.full_like(self.u_floor, 0.25))
+            tight = self.u_floor + (hi - self.u_floor) * torch.rand(V, device=d, dtype=torch.float64)
+            corner = torch.ones((V, self.n_cost), device=d, dtype=torch.float64)
+            corner.scatter_(1, torch.randint(0, self.n_cost, (V, 1), device=d), tight[:, None])
+            prior_u = torch.where((torch.rand(V, device=d) < self.p_corner)[:, None], corner, prior_u)
         choice = torch.rand((V, self.n_cost), device=d)
         u = torch.where(choice < self.p_keep, old_u, torch.where(choice < self.p_keep + self.p_achieved, achieved_u, prior_u))
 
         rate = self.decode(u)
-        cap = rate * self.span
+        cap = torch.maximum(rate * self.span, self.cap_floor)
         cost_t = b[:V, self.i_cost:self.i_cost + self.n_cost].to(torch.float64)
         if self.episode_budget:
             deficit = self.cum[pv]
@@ -136,8 +152,12 @@ class BudgetHerReplay(GpuHerReplay):
         b[:V, self.i_level:self.obs_dim] = level
         b[:V, self.i_next + self.i_level:self.i_next + self.obs_dim] = next_level
         base = relabel_reward(self.cfg, b[:V, self.i_next + self.a0:self.i_next + self.a1], goal_v, b[:V, i + 2], b[:V, i + 3], b[:V, i + 4], b[:V, i + 5], b[:V, i + 6])
-        alive = torch.where(overdrawn, torch.zeros_like(base), base) + self.alive_bonus
+        if self.soft_overdraft:
+            factor = torch.exp(-((next_deficit - cap).clamp_min(0.0) / cap).sum(dim=1)).float()
+            alive = torch.minimum(base, base * factor) + self.alive_bonus
+        else:
+            alive = torch.where(overdrawn, torch.zeros_like(base), base) + self.alive_bonus
         b[:V, i] = torch.where(b[:V, i + 6] > 0.5, base, alive)
         if self.lagrange:
-            b[:, i] = b[:, i] - (self.lam * b[:, self.i_cost:self.i_cost + self.n_cost]).sum(1)
+            b[:, i] = b[:, i] - (self.lam * self.lag_scale * b[:, self.i_cost:self.i_cost + self.n_cost]).sum(1)
         return self._finish(b[:, :self.obs_dim], b[:, self.i_act:self.i_rew], b[:, i], b[:, self.i_next:self.i_act], b[:, i + 1], self.gamma_pow[1], b)

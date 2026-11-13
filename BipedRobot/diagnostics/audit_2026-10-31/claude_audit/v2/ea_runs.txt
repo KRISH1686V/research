@@ -1,0 +1,9 @@
+shaped config/pilot_gait_min_v2.yaml 3
+shaped config/pilot_gait_min_v2.yaml 4
+shaped config/pilot_gait_min_v2.yaml 5
+nogait config/variant_min_nogait.yaml 3
+nogait config/variant_min_nogait.yaml 4
+nogait config/variant_min_nogait.yaml 5
+smooth config/variant_min_smooth.yaml 3
+smooth config/variant_min_smooth.yaml 4
+smooth config/variant_min_smooth.yaml 5

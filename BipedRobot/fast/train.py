@@ -34,6 +34,16 @@ from BipedRobot.train_her_biped import _write_run_metadata, build_env_config  # 
 REPO = Path(__file__).resolve().parents[1]
 HASHED = ["fast/__init__.py", "fast/collector.py", "fast/export_sb3.py", "fast/learner.py", "fast/nets.py", "fast/replay.py", "fast/train.py", "fast/valid_env.py", "fast/budget_env.py", "fast/budget_replay.py", "fast/gait_costs.py", "fast/mirror.py",
           "envs/her_loco_env.py", "envs/rewards/shared_reward.py"]
+# 12 Nov 2026: files of a second robot, hashed only for runs whose config names it in env.robot_type.
+ROBOT_HASHED = {"op3": ["envs/op3/op3_env.py", "envs/op3/mirror.py", "envs/op3/make_train_xml.py", "envs/assets/robotis_op3/op3_train.xml", "envs/assets/robotis_op3/scene_train.xml"]}
+
+
+def _mirror_maps(env_config: dict) -> tuple:
+    """(action_perm, obs_maps, priv_maps): the biped's from fast/mirror.py, or the OP3's (envs/op3/mirror.py) when env.robot_type is "op3" (12 Nov 2026)."""
+    if env_config.get("robot_type") == "op3":
+        from BipedRobot.envs.op3 import mirror as op3_mirror
+        return op3_mirror.action_perm, op3_mirror.obs_maps, op3_mirror.priv_maps
+    return action_perm, obs_maps, priv_maps
 
 
 def _args() -> argparse.Namespace:
@@ -93,7 +103,8 @@ def main() -> None:
     lr, gamma, tau = float(sac["actor_lr"]), float(sac["gamma"]), float(sac["tau"])
     meta = argparse.Namespace(**vars(args), algo="sac", reward_mode="track", relabel_strategy="future", n_sampled_goal=k_goal, stand_only=False)
     _write_run_metadata(str(run_dir), config, env_config, meta)
-    (run_dir / "code_hashes.json").write_text(json.dumps({f: hashlib.sha256((REPO / f).read_bytes()).hexdigest() for f in HASHED}, indent=1))
+    hashed = HASHED + ROBOT_HASHED.get(env_config.get("robot_type"), [])
+    (run_dir / "code_hashes.json").write_text(json.dumps({f: hashlib.sha256((REPO / f).read_bytes()).hexdigest() for f in hashed}, indent=1))
 
     probe = env_class(env_config)(config=copy.deepcopy(env_config), render_mode=None)
     if env_config.get("require_xml") and probe.xml_path != os.path.abspath(env_config["require_xml"]):
@@ -106,6 +117,7 @@ def main() -> None:
     clock = bool(getattr(probe, "clock_hz", 0.0))
     slow_yaw = bool(getattr(probe, "slow_yaw_s", 0.0))
     priv_dim = int(probe.privileged().shape[0]) if args.asym and probe.reset(seed=args.seed) else 0
+    priv_signed = int(getattr(probe, "priv_signed", 0))
     probe.close()
     cost_names = tuple(budget.get("costs", ("flight", "slip", "torque"))) if budget else ()
     n_budget = len(cost_names)
@@ -117,11 +129,17 @@ def main() -> None:
     actor_keep = actor_inputs(obs_dim, 3 + n_budget, n_budget, hide) if hide else None
     mirror = None
     if args.mirror:
-        op, os_ = obs_maps(frames, n_budget, clock, slow_yaw)
-        mirror = {"obs_perm": op, "obs_sign": os_, "act_perm": action_perm()}
+        act_perm_fn, obs_maps_fn, priv_maps_fn = _mirror_maps(env_config)
+        op, os_ = obs_maps_fn(frames, n_budget, clock, slow_yaw)
+        mirror = {"obs_perm": op, "obs_sign": os_, "act_perm": act_perm_fn()}
         if priv_dim:
-            pp, ps = priv_maps()
+            pp, ps = priv_maps_fn(priv_dim - 42 - priv_signed, priv_signed)
             mirror.update(priv_perm=pp, priv_sign=ps)
+    actor_mirror = None
+    if config.get("equivariant_actor"):  # the designer's exactly left-right symmetric policy, 9 Nov 2026; off unless the config sets it
+        if mirror is None:
+            raise ValueError("equivariant_actor needs --mirror")
+        actor_mirror = {k: mirror[k] for k in ("obs_perm", "obs_sign", "act_perm")}
     collector = Collector(env_config, args.n_envs, args.seed, obs_dim, act_dim, priv_dim=priv_dim)  # forks: before any CUDA use
     exporter = None if (budget or args.plain_ckpt or frames > 1 or args.asym) else Sb3Exporter(env_config, k_goal, batch, gamma, tau, lr)
 
@@ -142,12 +160,20 @@ def main() -> None:
     if budget:
         if args.n_step != 1:
             raise ValueError("n-step returns are not supported with token budgets yet")
-        replay = BudgetHerReplay(1_000_000, args.n_envs, batch, k_goal, obs_dim, act_dim, reward_cfg, device, budget, int(env_config.get("max_episode_steps", 500)), priv_dim=priv_dim, mirror=mirror)
+        dims = list(config["her"].get("relabel_dims", ["vx", "vy", "wz"]))
+        if set(dims) - {"vx", "vy", "wz"}:
+            raise ValueError(f"her.relabel_dims {dims}: only vx, vy, wz")
+        keep = tuple(i for i, n in enumerate(("vx", "vy", "wz")) if n not in dims)
+        replay = BudgetHerReplay(1_000_000, args.n_envs, batch, k_goal, obs_dim, act_dim, reward_cfg, device, budget, int(env_config.get("max_episode_steps", 500)), priv_dim=priv_dim, mirror=mirror,
+                                 relabel_keep=keep)
     else:
+        if config["her"].get("relabel_dims") not in (None, ["vx", "vy", "wz"]):
+            raise ValueError("her.relabel_dims needs token budgets (BudgetHerReplay)")
         replay = GpuHerReplay(1_000_000, args.n_envs, batch, k_goal, obs_dim, act_dim, reward_cfg, device, n_step=args.n_step, gamma=gamma, priv_dim=priv_dim, mirror=mirror)
     learner = SacLearner(replay, obs_dim, act_dim, device, mode=args.mode, lr=lr, gamma=gamma, tau=tau, layer_norm=args.layer_norm,
                          avg_q=args.avg_q, init_log_std=args.init_log_std, init_alpha=args.init_alpha, priv_dim=priv_dim, ema_tau=args.ema_tau, actor_keep=actor_keep,
-                         caps_t=args.caps_t, caps_s=args.caps_s, caps_sigma=args.caps_sigma)
+                         caps_t=args.caps_t, caps_s=args.caps_s, caps_sigma=args.caps_sigma, actor_mirror=actor_mirror,
+                         target_entropy=config.get("sac_target_entropy"))
     print(f"torch device: {device} ({torch.cuda.get_device_name(device) if device.type == 'cuda' else 'cpu'}) mode: {args.mode} "
           f"threads: {torch.get_num_threads()} n_envs: {args.n_envs} batch: {batch} updates/env step: {args.updates_per_env_step} "
           f"realism: {args.realism} load: {os.getloadavg()}", flush=True)
@@ -271,7 +297,7 @@ def main() -> None:
             d = min(1.0, steps / max(1.0, args.total_steps * args.difficulty_ramp))
             collector.set_difficulty(d)
             if budget and budget.get("curriculum"):
-                replay.set_budget_floor(1.0 - d)
+                replay.set_budget_floor(1.0 - d * (1.0 - float(budget.get("u_low", 0.0))))  # u_low < 0: training also draws budgets tighter than u = 0
         t6 = pc()
 
         if steps >= next_save and steps < args.total_steps:

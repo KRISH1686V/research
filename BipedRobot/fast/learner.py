@@ -20,15 +20,16 @@ class SacLearner:
                  lr: float = 3e-4, gamma: float = 0.99, tau: float = 0.005, hidden: int = 256,
                  layer_norm: bool = False, avg_q: bool = False, init_log_std: float | None = None, init_alpha: float = 1.0,
                  priv_dim: int = 0, ema_tau: float = 0.0, actor_keep: list[int] | None = None,
-                 caps_t: float = 0.0, caps_s: float = 0.0, caps_sigma: float = 0.01):
+                 caps_t: float = 0.0, caps_s: float = 0.0, caps_sigma: float = 0.01, actor_mirror: dict | None = None,
+                 target_entropy: float | None = None):
         if mode not in ("eager", "fused", "graph"):
             raise ValueError(f"unknown mode {mode}")
         self.caps_t, self.caps_s, self.caps_sigma = float(caps_t), float(caps_s), float(caps_sigma)
         self.replay, self.device, self.mode = replay, device, mode
         self.gamma, self.tau = gamma, tau
-        self.target_entropy = -float(act_dim)
+        self.target_entropy = -float(act_dim) if target_entropy is None else float(target_entropy)  # config sac_target_entropy, 11 Nov 2026: lower = less exploration noise
         self.avg_q, self.layer_norm = avg_q, layer_norm
-        self.actor = Actor(obs_dim, act_dim, hidden, init_log_std=init_log_std, keep=actor_keep).to(device)
+        self.actor = Actor(obs_dim, act_dim, hidden, init_log_std=init_log_std, keep=actor_keep, mirror=actor_mirror).to(device)
         self.critic = Critic(obs_dim + priv_dim, act_dim, hidden, layer_norm=layer_norm).to(device)
         self.ema_tau = float(ema_tau)
         self.actor_ema = copy.deepcopy(self.actor) if ema_tau else None

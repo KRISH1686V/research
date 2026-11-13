@@ -77,6 +77,8 @@ class Progress(BaseCallback):
     def _on_rollout_start(self):
         if self.a.difficulty_ramp:
             self.training_env.env_method("set_difficulty", min(1.0, self.num_timesteps / max(1.0, self.a.total_steps * self.a.difficulty_ramp)))
+        if self.a.smoothness_ramp_fraction:  # as fast/train.py: smoothness costs ramp from 0 to full over this fraction of training (11 Nov 2026)
+            self.training_env.env_method("set_smoothness_ramp", min(1.0, self.num_timesteps / max(1.0, self.a.total_steps * self.a.smoothness_ramp_fraction)))
         wall = time.perf_counter() - self.t0
         info = self.model.ep_info_buffer
         if info:
@@ -99,10 +101,12 @@ def main() -> None:
     p.add_argument("--n_epochs", type=int, default=5)
     p.add_argument("--difficulty_ramp", type=float, default=0.4)
     p.add_argument("--save_every", type=int, default=250_000)
+    p.add_argument("--match_sac_schedule", action="store_true", help="ramp smoothness costs like fast/train.py (shaping.smoothness_ramp_fraction, default 0.4); pass --difficulty_ramp to match too")
     args = p.parse_args()
 
     config = yaml.safe_load(open(args.config))
     env_config = build_env_config(config, args.realism, False)
+    args.smoothness_ramp_fraction = float(env_config.get("shaping", {}).get("smoothness_ramp_fraction", 0.4)) if args.match_sac_schedule else 0.0
     for section in ("validity", "token_budget"):
         if config.get(section):
             env_config[section] = copy.deepcopy(config[section])

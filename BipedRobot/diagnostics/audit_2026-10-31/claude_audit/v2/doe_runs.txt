@@ -1,0 +1,32 @@
+run_doe_arm.sh doe01 config/doe/doe01.yaml 3
+run_doe_arm.sh doe02 config/doe/doe02.yaml 3 --avg_q --ema_tau 0.002 --asym --mirror --n_step 3
+run_doe_arm.sh doe03 config/doe/doe03.yaml 3 --layer_norm --ema_tau 0.002 --asym --mirror
+run_doe_arm.sh doe04 config/doe/doe04.yaml 3 --layer_norm --avg_q --n_step 3
+run_doe_arm.sh doe05 config/doe/doe05.yaml 3 --difficulty_ramp 0.4 --ema_tau 0.002 --asym --n_step 3
+run_doe_arm.sh doe06 config/doe/doe06.yaml 3 --difficulty_ramp 0.4 --avg_q --mirror
+run_doe_arm.sh doe07 config/doe/doe07.yaml 3 --difficulty_ramp 0.4 --layer_norm --mirror --n_step 3
+run_doe_arm.sh doe08 config/doe/doe08.yaml 3 --difficulty_ramp 0.4 --layer_norm --avg_q --ema_tau 0.002 --asym
+run_doe_arm.sh doe09 config/doe/doe09.yaml 3 --ema_tau 0.002 --mirror --n_step 3
+run_doe_arm.sh doe10 config/doe/doe10.yaml 3 --avg_q --asym
+run_doe_arm.sh doe11 config/doe/doe11.yaml 3 --layer_norm --asym --n_step 3
+run_doe_arm.sh doe12 config/doe/doe12.yaml 3 --layer_norm --avg_q --ema_tau 0.002 --mirror
+run_doe_arm.sh doe13 config/doe/doe13.yaml 3 --difficulty_ramp 0.4 --asym --mirror
+run_doe_arm.sh doe14 config/doe/doe14.yaml 3 --difficulty_ramp 0.4 --avg_q --ema_tau 0.002 --n_step 3
+run_doe_arm.sh doe15 config/doe/doe15.yaml 3 --difficulty_ramp 0.4 --layer_norm --ema_tau 0.002
+run_doe_arm.sh doe16 config/doe/doe16.yaml 3 --difficulty_ramp 0.4 --layer_norm --avg_q --asym --mirror --n_step 3
+run_doe_arm.sh doe01 config/doe/doe01.yaml 4
+run_doe_arm.sh doe02 config/doe/doe02.yaml 4 --avg_q --ema_tau 0.002 --asym --mirror --n_step 3
+run_doe_arm.sh doe03 config/doe/doe03.yaml 4 --layer_norm --ema_tau 0.002 --asym --mirror
+run_doe_arm.sh doe04 config/doe/doe04.yaml 4 --layer_norm --avg_q --n_step 3
+run_doe_arm.sh doe05 config/doe/doe05.yaml 4 --difficulty_ramp 0.4 --ema_tau 0.002 --asym --n_step 3
+run_doe_arm.sh doe06 config/doe/doe06.yaml 4 --difficulty_ramp 0.4 --avg_q --mirror
+run_doe_arm.sh doe07 config/doe/doe07.yaml 4 --difficulty_ramp 0.4 --layer_norm --mirror --n_step 3
+run_doe_arm.sh doe08 config/doe/doe08.yaml 4 --difficulty_ramp 0.4 --layer_norm --avg_q --ema_tau 0.002 --asym
+run_doe_arm.sh doe09 config/doe/doe09.yaml 4 --ema_tau 0.002 --mirror --n_step 3
+run_doe_arm.sh doe10 config/doe/doe10.yaml 4 --avg_q --asym
+run_doe_arm.sh doe11 config/doe/doe11.yaml 4 --layer_norm --asym --n_step 3
+run_doe_arm.sh doe12 config/doe/doe12.yaml 4 --layer_norm --avg_q --ema_tau 0.002 --mirror
+run_doe_arm.sh doe13 config/doe/doe13.yaml 4 --difficulty_ramp 0.4 --asym --mirror
+run_doe_arm.sh doe14 config/doe/doe14.yaml 4 --difficulty_ramp 0.4 --avg_q --ema_tau 0.002 --n_step 3
+run_doe_arm.sh doe15 config/doe/doe15.yaml 4 --difficulty_ramp 0.4 --layer_norm --ema_tau 0.002
+run_doe_arm.sh doe16 config/doe/doe16.yaml 4 --difficulty_ramp 0.4 --layer_norm --avg_q --asym --mirror --n_step 3

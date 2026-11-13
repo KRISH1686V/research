@@ -1,0 +1,8 @@
+deployfixsigma config/v2_deploy_budget_sigma075.yaml 3
+deployfixsigma config/v2_deploy_budget_sigma075.yaml 4
+deployfixalpha config/v2_deploy_budget_alpha30.yaml 3
+deployfixalpha config/v2_deploy_budget_alpha30.yaml 4
+deploywin config/v2_deploy_budget.yaml 6
+deploywin config/v2_deploy_budget.yaml 7
+deploycmd config/v2_deploy_cmd.yaml 6
+deploycmd config/v2_deploy_cmd.yaml 7

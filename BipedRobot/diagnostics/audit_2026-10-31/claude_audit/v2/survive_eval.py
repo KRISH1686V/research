@@ -8,9 +8,11 @@ HIDE, a comma list, replaces inputs the real robot cannot measure before the pol
   levels_full  budget balances read as full
 Also in that list, hold_heading turns the yaw command into a heading hold, wz = clip(-gain * yaw), as the Pi could do from its IMU. No retraining and no sideways correction.
 hold_gyro does the same with no true heading: yaw comes from adding up the sensed yaw rate, with its noise and bias, so only what the robot can measure is used.
+The forward command is 0.2 m/s unless the environment variable SURVIVE_SPEED gives another (added 6 Nov 2026 for the straight-step arm, trained at 0.05-0.15).
 """
 import copy
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -33,6 +35,7 @@ class SpeedLoggedEnv(LoggedEnv):
         return out
 
 
+SPEED = float(os.environ.get("SURVIVE_SPEED", "0.2"))
 HEADING_GAIN, HEADING_MAX_WZ = 1.0, 0.15  # 0.15 rad/s is the largest yaw command in training
 
 
@@ -126,7 +129,7 @@ def main():
         u = pad_budget(u, env)
         if u is None:
             continue
-        command = np.array([0.2, 0.0, 0.0, *u], np.float32)
+        command = np.array([SPEED, 0.0, 0.0, *u], np.float32)
         rate = decode_rate(np.asarray(u, float), env.rate_min, env.rate_max)
         episodes, rows = [], []
         for seed in range(a, b):
@@ -145,7 +148,7 @@ def main():
                          "measured_cost": np.mean([r["cost_mean_steady"] for r in ok], axis=0).tolist() if ok else None,
                          "episodes_with_overdraft": int(sum(r["ever_overdrawn"] for r in rows)), "n": len(rows)}
     env.close()
-    Path(out).write_text(json.dumps({"label": label, "checkpoint": ckpt, "steps": trained_steps, "realism": realism, "pushes": settings.pushes, "seconds": float(seconds),
+    Path(out).write_text(json.dumps({"label": label, "checkpoint": ckpt, "steps": trained_steps, "realism": realism, "pushes": settings.pushes, "seconds": float(seconds), "speed": SPEED,
                                      "seeds": seeds, "hide": sorted(hide), "results": results}, default=str))
 
 

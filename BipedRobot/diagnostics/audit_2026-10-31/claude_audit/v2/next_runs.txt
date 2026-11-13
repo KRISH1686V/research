@@ -1,0 +1,8 @@
+budgetwin config/v2_budget_window.yaml 3
+budgetwin config/v2_budget_window.yaml 4
+cmdsurvive config/v2_cmd_survive.yaml 3
+cmdsurvivegait config/v2_cmd_survive_gait.yaml 3
+budgetwingait config/v2_budget_window_gait.yaml 3
+budgetwingait config/v2_budget_window_gait.yaml 4
+cmdsurvive config/v2_cmd_survive.yaml 4
+cmdsurvivegait config/v2_cmd_survive_gait.yaml 4

@@ -20,13 +20,14 @@ class RewardConfig:
     progress_weight: float
     gait_shaping: bool
     smooth_penalties: bool
+    track_rel: tuple = ()  # (v_rel, v_min, w_rel, w_min) from reward.track_rel; empty keeps the Gaussian kernel
 
     @classmethod
     def from_env(cls, env) -> "RewardConfig":
         if env.reward_mode != "track" or env.budget_goal_enabled:
             raise ValueError("fast replay supports reward_mode 'track' without budgets")
         return cls(float(env.sigma_v), float(env.sigma_w), float(env.fall_penalty), float(env.progress_weight),
-                   bool(env.gait_shaping), bool(env.smooth_penalties))
+                   bool(env.gait_shaping), bool(env.smooth_penalties), tuple(getattr(env, "track_rel", None) or ()))
 
 
 def relabel_reward(cfg: RewardConfig, achieved: torch.Tensor, goal: torch.Tensor, r_smooth: torch.Tensor,
@@ -35,7 +36,13 @@ def relabel_reward(cfg: RewardConfig, achieved: torch.Tensor, goal: torch.Tensor
     """compute_reward_batch on tensors. `achieved` and `goal` are [vx, vy, wz]."""
     v = achieved[:, :2] - goal[:, :2]
     w = achieved[:, 2] - goal[:, 2]
-    r = (-(v * v).sum(-1) / (2.0 * cfg.sigma_v ** 2)).exp() * (-(w * w) / (2.0 * cfg.sigma_w ** 2)).exp()
+    if cfg.track_rel:
+        v_rel, v_min, w_rel, w_min = cfg.track_rel
+        sv = (v_rel * goal[:, :2].norm(dim=-1)).clamp_min(v_min)
+        sw = (w_rel * goal[:, 2].abs()).clamp_min(w_min)
+        r = (-(v * v).sum(-1) / (sv * sv)).exp() * (-(w * w) / (sw * sw)).exp()
+    else:
+        r = (-(v * v).sum(-1) / (2.0 * cfg.sigma_v ** 2)).exp() * (-(w * w) / (2.0 * cfg.sigma_w ** 2)).exp()
     if cfg.progress_weight:
         progress = (achieved[:, 0] / goal[:, 0]).clamp(0.0, 1.0)
         r = r + cfg.progress_weight * torch.where(goal[:, 0] > 0.1, progress, torch.zeros_like(r))

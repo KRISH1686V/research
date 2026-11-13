@@ -29,7 +29,11 @@ BUDGETS = {
     "loose_steps2_lift": ((1, 1, 1), {"steps": 0.2314, "lowsteps": 0.0}), "mid_steps2_lift": ((0.5, 0.5, 0.5), {"steps": 0.2314, "lowsteps": 0.0}),
     # Tilted stance: rate 0.02 to 2 feet per control step; u 0.4375 is rate 0.15, so at most about 0.3 tilted feet per step on average,
     # which leaves room for heel strike and toe-off. "human" sets all three style budgets together.
-    "loose_flat": ((1, 1, 1), {"tiltstance": 0.4375}), "mid_flat": ((0.5, 0.5, 0.5), {"tiltstance": 0.4375}),
+    "loose_flat": ((1, 1, 1), {"tiltstance": 0.4375}), "mid_flat": ((0.5, 0.5, 0.5), {"tiltstance": 0.4375}), "tight_flat": ((0.5, 0.5, 0.5), {"tiltstance": 0.0}),
+    "mid_human_flat": ((0.5, 0.5, 0.5), {"steps": 0.2314, "lowsteps": 0.0, "tiltstance": 0.0}),
+    # Part-sole stance (feet down without the whole sole on the floor): same rate range as tilted stance.
+    "mid_sole": ((0.5, 0.5, 0.5), {"partsole": 0.4375}), "tight_sole": ((0.5, 0.5, 0.5), {"partsole": 0.0}),
+    "mid_human_sole": ((0.5, 0.5, 0.5), {"steps": 0.2314, "lowsteps": 0.0, "partsole": 0.0}),
     "loose_human": ((1, 1, 1), {"steps": 0.2314, "lowsteps": 0.0, "tiltstance": 0.4375}),
     "mid_human": ((0.5, 0.5, 0.5), {"steps": 0.2314, "lowsteps": 0.0, "tiltstance": 0.4375}),
 }

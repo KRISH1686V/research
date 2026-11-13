@@ -1,0 +1,2 @@
+deploylong7mhumanrefsole config/v2_deploy_budget_alpha30_human_ref_sole.yaml 3
+deploylong7mhumanrefsole config/v2_deploy_budget_alpha30_human_ref_sole.yaml 4

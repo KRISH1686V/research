@@ -181,3 +181,26 @@ def test_comparison_configs_differ_only_where_they_should():
     assert episode == budget
     r = decode_rate(np.full(3, 0.5), np.array(budget["token_budget"]["rate_min"]), np.array(budget["token_budget"]["rate_max"]))
     assert np.allclose(r, [0.0316, 0.0632, 0.0447], atol=1e-4), "the dual-ascent limits are the budget at u = 0.5"
+
+
+def test_normalized_penalty_pays_per_unit_of_each_limit():
+    """lagrange.normalize (11 Nov 2026): the penalty is lambda * cost / limit, so a tiny cost such as joint shake is not ignored."""
+    env = make_env(rate_min=[10.0, 10.0, 10.0], rate_max=[20.0, 20.0, 20.0], p_unconstrained=1.0, alive_bonus=0.2)
+    data = rollout(env, 1200, amp=0.6)
+    norm = {**LAGRANGE, "lagrange": {**LAGRANGE["lagrange"], "normalize": True, "lr": 0.0, "init": 0.3}}
+    rb = fill(env, data, budget=norm)
+    rb.dual_step(np.array(LAGRANGE["lagrange"]["limit"]) * 1.5)  # lr 0: a fixed penalty, lambda stays at init
+    assert np.allclose(rb._lam_np, 0.3)
+    rb_off = fill(env, data, budget={k: v for k, v in LAGRANGE.items() if k != "lagrange"})
+    torch.manual_seed(7)
+    obs, _, rew, _, _, _ = [x.cpu().numpy() for x in rb.sample()]
+    torch.manual_seed(7)
+    _, _, rew_off, _, _, _ = [x.cpu().numpy() for x in rb_off.sample()]
+    lim = np.array(LAGRANGE["lagrange"]["limit"])
+    stored = {np.concatenate((d["obs"][:3], d["obs"][9:-3])).tobytes(): d for d in data}
+    for j in range(len(rew)):
+        d = stored[np.concatenate((obs[j, :3], obs[j, 9:-3])).tobytes()]
+        assert abs((rew_off[j] - float((0.3 / lim) @ d["info"]["budget_cost"])) - rew[j]) < 1e-4
+    rb_raw = fill(env, data, budget=LAGRANGE)
+    assert torch.allclose(rb_raw.lag_scale, torch.ones(3, device=rb_raw.lag_scale.device)), "default unchanged: raw costs"
+    env.close()

@@ -29,7 +29,11 @@ def _pad_cost(cost) -> tuple:
 
 
 def env_class(env_config: dict):
-    """BudgetLocoEnv for token budgets, ValidLocoEnv for realism corrections, otherwise the plain env."""
+    """BudgetLocoEnv for token budgets, ValidLocoEnv for realism corrections, otherwise the plain env. A config naming env.robot_type (12 Nov 2026: "op3",
+    the Robotis OP3 in envs/op3) gets that robot's classes; without it nothing changes."""
+    if env_config.get("robot_type"):
+        from BipedRobot.envs.op3.op3_env import op3_env_class
+        return op3_env_class(env_config)
     if env_config.get("token_budget"):
         return BudgetLocoEnv
     return ValidLocoEnv if env_config.get("validity") else HERLocoEnv

@@ -1,0 +1,10 @@
+deploycmdlong7m config/v2_deploy_cmd_alpha30.yaml 3
+deploycmdlong7m config/v2_deploy_cmd_alpha30.yaml 4
+deploycmdlong7m config/v2_deploy_cmd_alpha30.yaml 5
+deploycmdlong7m config/v2_deploy_cmd_alpha30.yaml 6
+deploylong7mcaps config/v2_deploy_budget_alpha30.yaml 3
+deploylong7mcaps config/v2_deploy_budget_alpha30.yaml 4
+deploylong7mcaps config/v2_deploy_budget_alpha30.yaml 7
+deploylong7malpha20 config/v2_deploy_budget_alpha20.yaml 3
+deploylong7malpha20 config/v2_deploy_budget_alpha20.yaml 4
+deploylong7malpha20 config/v2_deploy_budget_alpha20.yaml 7

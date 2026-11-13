@@ -1,0 +1,2 @@
+deploylong7mdsup config/v2_deploy_budget_alpha30_dsup_fit.yaml 11
+deploylong7mdsup config/v2_deploy_budget_alpha30_dsup_fit.yaml 12
